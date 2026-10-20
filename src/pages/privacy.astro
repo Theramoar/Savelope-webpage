@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config';
+---
+
+<BaseLayout
+  title="Privacy Policy — Savelope"
+  description="How Savelope handles your data: what stays on your device, what the app measures, and which third-party services are involved."
+>
+  <section class="section">
+    <div class="wrap prose">
+      <h1>Privacy Policy</h1>
+      <p class="prose--meta">Last updated: {SITE.lastUpdated}</p>
+
+      <p>
+        Savelope is built by Mihails Kuznecovs. This policy explains what the app does with
+        your information in plain language. The short version: your challenges and savings
+        data are yours, they live on your device and in your own iCloud account, and the
+        developer cannot read them.
+      </p>
+
+      <h2>What stays on your device</h2>
+      <p>
+        Everything you create in Savelope — your challenges, envelope amounts, the envelopes
+        you have opened, your notes, themes and settings — is stored locally on your device.
+        If you enable iCloud, this data syncs through <strong>Apple CloudKit</strong> into
+        your own private iCloud container. It is governed by{' '}
+        <a href="https://www.apple.com/legal/privacy/" rel="noopener">Apple's privacy policy</a>,
+        and the developer has no access to its contents.
+      </p>
+      <p>
+        If you share a challenge with another person, the challenge data you choose to share
+        is shared through CloudKit with the people you invite, and only with them.
+      </p>
+
+      <h2>What the app measures</h2>
+      <p>
+        Savelope collects anonymous usage and diagnostic information to understand which
+        features people use and to find crashes. This includes things like which screens are
+        opened, which actions are taken, app version, device model and operating system
+        version. It is not used to identify you and is not sold.
+      </p>
+
+      <h2>Third-party services</h2>
+      <p>Savelope uses the following services, each with its own privacy policy:</p>
+      <ul>
+        <li>
+          <strong>Google Firebase</strong> — analytics and crash diagnostics.{' '}
+          <a href="https://firebase.google.com/support/privacy" rel="noopener">Privacy policy</a>
+        </li>
+        <li>
+          <strong>TelemetryDeck</strong> — privacy-focused product analytics.{' '}
+          <a href="https://telemetrydeck.com/privacy/" rel="noopener">Privacy policy</a>
+        </li>
+        <li>
+          <strong>RevenueCat</strong> — manages subscriptions and purchase status.{' '}
+          <a href="https://www.revenuecat.com/privacy/" rel="noopener">Privacy policy</a>
+        </li>
+        <li>
+          <strong>Apple CloudKit &amp; the App Store</strong> — sync, sharing and payments.{' '}
+          <a href="https://www.apple.com/legal/privacy/" rel="noopener">Privacy policy</a>
+        </li>
+        <li>
+          <strong>Unsplash</strong> — only if you choose a photo background for a custom
+          theme; your search terms are sent to Unsplash to return results.{' '}
+          <a href="https://unsplash.com/privacy" rel="noopener">Privacy policy</a>
+        </li>
+      </ul>
+
+      <h2>Payments</h2>
+      <p>
+        Savelope is free to download with an optional Premium subscription. All purchases are
+        processed by Apple. The developer never sees or stores your payment card, billing
+        address or Apple Account credentials — only whether a subscription is currently
+        active.
+      </p>
+
+      <h2>Notifications</h2>
+      <p>
+        If you turn on daily reminders, those notifications are scheduled locally on your
+        device. You can turn them off at any time in the app or in iOS Settings.
+      </p>
+
+      <h2>Children's privacy</h2>
+      <p>
+        Savelope is rated 4+ and is not directed at children under 13, and the developer does
+        not knowingly collect personal information from them. If you believe a child has
+        provided personal information, please get in touch and it will be deleted.
+      </p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>Deleting the app removes the data stored on your device.</li>
+        <li>
+          Data synced to iCloud can be removed in iOS Settings under your Apple Account →
+          iCloud → Manage Account Storage.
+        </li>
+        <li>
+          You can limit ad and analytics identifiers in iOS Settings → Privacy &amp; Security
+          → Tracking.
+        </li>
+        <li>
+          To request information or deletion, email{' '}
+          <a href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a>.
+        </li>
+      </ul>
+
+      <h2>Changes to this policy</h2>
+      <p>
+        This policy may be updated as the app changes. Material changes will be reflected here
+        with a new "last updated" date.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about privacy? Email{' '}
+        <a href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

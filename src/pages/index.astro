@@ -1,0 +1,484 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AppStoreButton from '../components/AppStoreButton.astro';
+import Phone from '../components/Phone.astro';
+import { SITE } from '../config';
+
+import gridShot from '../assets/screenshots/05-grid.png';
+import planShot from '../assets/screenshots/02-plan.png';
+import revealShot from '../assets/screenshots/03-reveal.png';
+import openedShot from '../assets/screenshots/04-opened.png';
+import pickShot from '../assets/screenshots/01-pick.png';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const steps = [
+  {
+    n: '01',
+    title: 'Pick a goal',
+    body: 'The classic challenge is 100 envelopes adding up to $5,050. Or set your own total and envelope count — a trip, a safety net, a deposit.',
+  },
+  {
+    n: '02',
+    title: 'Open one a day',
+    body: "Every envelope holds a different amount. You don't know which until you open it, and that tiny bit of suspense is what keeps the habit alive.",
+  },
+  {
+    n: '03',
+    title: 'Put that much aside',
+    body: 'Move the amount to your savings, or set it aside in cash. Savelope marks it saved and the total climbs towards your goal.',
+  },
+];
+
+const freeFeatures = [
+  {
+    title: 'The classic challenge',
+    body: '100 envelopes, $1 to $100, in a random order. Finish and you have $5,050.',
+  },
+  {
+    title: 'Challenges for any goal',
+    body: 'Set your own total and number of envelopes. Daily, weekly or monthly pace.',
+  },
+  {
+    title: 'Four ways to distribute',
+    body: 'Random for suspense, increasing to start gently, decreasing to front-load, or equal.',
+  },
+  {
+    title: 'A daily nudge',
+    body: "One reminder a day, at a time you pick. That's the whole thing.",
+  },
+  {
+    title: 'Save with family and friends',
+    body: 'Share a challenge and complete it together, with progress that syncs between you.',
+  },
+  {
+    title: 'Shareable progress',
+    body: 'Turn a milestone into an image worth posting.',
+  },
+];
+
+const premiumFeatures = [
+  { title: 'Unlimited challenges', body: 'Run as many goals at once as you like.' },
+  { title: 'Analytics', body: 'Consistency, history and a calendar of every envelope you have opened.' },
+  { title: 'Custom themes', body: 'Colour your challenges, or set a photo background.' },
+  { title: 'Envelope notes', body: 'Write down what a given day was about.' },
+  { title: 'Alternate app icons', body: 'Six to choose from, including Sakura.' },
+];
+
+const icons = ['default', 'red', 'green', 'purple', 'yellow', 'sakura'];
+
+const faqs = [
+  {
+    q: 'Does Savelope connect to my bank?',
+    a: "No, and that's deliberate. Savelope never asks for bank credentials and never moves money. You move it yourself — to a savings account or a jar — and the app keeps score.",
+  },
+  {
+    q: 'Why $5,050?',
+    a: 'It is what you get when you add up every whole number from 1 to 100. One hundred envelopes, each a different amount between $1 and $100, adds up to exactly $5,050.',
+  },
+  {
+    q: 'What if I miss a day?',
+    a: "Nothing breaks. The envelopes don't expire and there is no penalty. Open the one you missed whenever you come back.",
+  },
+  {
+    q: 'Can I pick a smaller goal?',
+    a: 'Yes. $1,000, $2,500, $10,000 or anything you type in, spread over as many envelopes as you want. The maths adjusts.',
+  },
+  {
+    q: 'Do I need to pay?',
+    a: 'No. The classic challenge, custom goals, reminders and shared challenges are free. Premium adds unlimited challenges, analytics, themes, notes and alternate icons.',
+  },
+  {
+    q: 'Is my data private?',
+    a: 'Your challenges live on your device and sync through your own iCloud account, which means the developer cannot read them. See the privacy policy for the details.',
+  },
+];
+---
+
+<BaseLayout
+  title="Savelope — Save $5,050 one envelope at a time"
+  description="A savings challenge that actually sticks. 100 envelopes, each holding a different amount. Open one a day, put that much aside, and finish with $5,050."
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <p class="rating">
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span>{SITE.rating} from {SITE.ratingCount} ratings on the App Store</span>
+        </p>
+        <h1>Save ${'5,050'} one envelope at a time</h1>
+        <p class="lede">
+          A hundred envelopes, each holding a different amount between $1 and $100. Open one a
+          day, put that much aside, and watch small amounts turn into a number you would never
+          have saved on purpose.
+        </p>
+        <div class="hero__cta">
+          <AppStoreButton size="lg" />
+          <a class="btn btn--ghost" href="#how-it-works">See how it works</a>
+        </div>
+        <p class="hero__meta">Free to start · iPhone, iPad and Mac · No bank account needed</p>
+      </div>
+
+      <div class="hero__art">
+        <Phone src={gridShot} alt="The Savelope challenge grid showing 4% saved of $5,050" width={290} loading="eager" />
+        <div class="hero__art-back">
+          <Phone src={revealShot} alt="An opened envelope asking you to put $19 aside" width={230} loading="eager" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section section--alt" id="how-it-works">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">How it works</p>
+        <h2>Three steps, then repeat</h2>
+        <p class="lede">
+          The challenge is old — people have done it with paper envelopes for years. Savelope
+          just keeps the numbers honest and reminds you.
+        </p>
+      </div>
+
+      <ol class="steps">
+        {
+          steps.map((s) => (
+            <li class="card step">
+              <span class="step__n">{s.n}</span>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Screenshot tour -->
+  <section class="section">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">A look inside</p>
+        <h2>Small, daily, and a little bit fun</h2>
+      </div>
+
+      <div class="tour">
+        <Phone src={pickShot} alt="Choosing your first envelope from a grid of 100" caption="Pick any envelope. You'll open them all eventually." />
+        <Phone src={planShot} alt="A plan summary: $5,050 across 100 envelopes, finishing January 2027" caption="Know what you signed up for before you start." />
+        <Phone src={openedShot} alt="A celebration screen for an opened $80 envelope" caption="The big ones feel like a win, not a chore." />
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust -->
+  <section class="section section--alt">
+    <div class="wrap trust">
+      <h2>Savelope never touches your money</h2>
+      <p class="lede">
+        There is no bank connection, no card, no balance to top up. Savelope tells you what to
+        set aside and keeps score of what you have. The money stays where you put it — your
+        savings account, or an actual envelope.
+      </p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" id="features">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">Features</p>
+        <h2>Free to start</h2>
+        <p class="lede">Everything you need for the challenge itself, without paying anything.</p>
+      </div>
+
+      <div class="grid grid--3 feats">
+        {
+          freeFeatures.map((f) => (
+            <div class="card">
+              <h3>{f.title}</h3>
+              <p>{f.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="center premium-head">
+        <p class="eyebrow">Savelope Premium</p>
+        <h2>For when one goal isn't enough</h2>
+      </div>
+
+      <div class="grid grid--3 feats">
+        {
+          premiumFeatures.map((f) => (
+            <div class="card card--premium">
+              <h3>{f.title}</h3>
+              <p>{f.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="icons">
+        <p>Six app icons to pick from:</p>
+        <ul>
+          {
+            icons.map((i) => (
+              <li>
+                <img src={`${base}/images/icons/icon-${i}.png`} alt={`${i} app icon`} width="52" height="52" loading="lazy" />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">Questions</p>
+        <h2>Before you start</h2>
+      </div>
+
+      <div class="faqs">
+        {
+          faqs.map((f) => (
+            <details class="card faq">
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="section cta">
+    <div class="wrap center">
+      <h2>Day one is one envelope</h2>
+      <p class="lede">
+        The first one might ask for $3. It might ask for $87. Either way you'll have started.
+      </p>
+      <div class="cta__btn"><AppStoreButton size="lg" /></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    padding-block: clamp(48px, 8vw, 104px);
+    background:
+      radial-gradient(900px 440px at 78% 8%, var(--accent-soft), transparent 68%),
+      var(--bg);
+    overflow: hidden;
+  }
+
+  .hero__in {
+    display: grid;
+    gap: 3.5rem;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1.04fr 0.96fr;
+      gap: 2rem;
+    }
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .stars {
+    color: #f5a623;
+    letter-spacing: 0.06em;
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .hero__meta {
+    margin-top: 1.4rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .hero__art {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2rem;
+  }
+
+  .hero__art-back {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-108%) rotate(-5deg);
+    display: none;
+  }
+
+  @media (min-width: 1040px) {
+    .hero__art-back {
+      display: block;
+    }
+    .hero__art {
+      justify-content: flex-end;
+      padding-right: 1rem;
+    }
+  }
+
+  /* Steps */
+  .steps {
+    list-style: none;
+    margin: 3rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 820px) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .step__n {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 0.7rem;
+  }
+
+  .step p,
+  .faq p,
+  .feats p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  /* Tour */
+  .tour {
+    margin-top: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2.5rem 2rem;
+  }
+
+  /* Trust */
+  .trust {
+    max-width: 760px;
+    text-align: center;
+  }
+
+  .trust .lede {
+    margin-inline: auto;
+  }
+
+  /* Features */
+  .feats {
+    margin-top: 3rem;
+  }
+
+  .card--premium {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+    background: linear-gradient(180deg, var(--accent-soft), var(--surface) 60%);
+  }
+
+  .premium-head {
+    margin-top: 5rem;
+  }
+
+  .icons {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .icons p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .icons ul {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+  }
+
+  .icons img {
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  /* FAQ */
+  .faqs {
+    margin-top: 3rem;
+    display: grid;
+    gap: 1rem;
+    max-width: 780px;
+    margin-inline: auto;
+  }
+
+  .faq {
+    padding: 1.1rem 1.4rem;
+  }
+
+  .faq summary {
+    cursor: pointer;
+    font-weight: 650;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq summary::after {
+    content: '+';
+    color: var(--accent);
+    font-size: 1.4rem;
+    line-height: 1;
+    flex: none;
+  }
+
+  .faq[open] summary::after {
+    content: '–';
+  }
+
+  .faq[open] summary {
+    margin-bottom: 0.8rem;
+  }
+
+  /* CTA */
+  .cta__btn {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+</style>

@@ -1,0 +1,117 @@
+---
+import { SITE } from '../config';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const here = Astro.url.pathname.replace(/\/$/, '');
+
+const links = [
+  { href: `${base}/#how-it-works`, label: 'How it works' },
+  { href: `${base}/#features`, label: 'Features' },
+  { href: `${base}/support`, label: 'Support' },
+];
+---
+
+<header class="hdr">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="wrap hdr__in">
+    <a class="brand" href={`${base}/`}>
+      <img src={`${base}/images/icons/icon-default.png`} alt="" width="32" height="32" />
+      <span>{SITE.name}</span>
+    </a>
+
+    <nav class="nav" aria-label="Main">
+      {
+        links.map((l) => (
+          <a href={l.href} aria-current={here === l.href ? 'page' : undefined}>
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a class="btn btn--primary btn--sm" href={SITE.appStoreUrl} rel="noopener">
+      Download
+    </a>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hdr__in {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 64px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .brand:hover {
+    text-decoration: none;
+  }
+
+  .brand img {
+    border-radius: 7px;
+  }
+
+  .nav {
+    display: flex;
+    gap: 1.5rem;
+    margin-left: auto;
+    font-size: 0.95rem;
+  }
+
+  .nav a {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .nav a:hover,
+  .nav a[aria-current='page'] {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .btn--sm {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.92rem;
+  }
+
+  .skip {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .skip:focus {
+    left: 1rem;
+    top: 0.6rem;
+    background: var(--surface);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    z-index: 100;
+  }
+
+  @media (max-width: 719px) {
+    .nav {
+      display: none;
+    }
+    .btn--sm {
+      margin-left: auto;
+    }
+  }
+</style>

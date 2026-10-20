@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config';
+
+const topics = [
+  {
+    q: 'I opened an envelope by accident',
+    a: 'You can close it again. Open the envelope, tap the ••• menu and choose to close it — the amount comes back off your total.',
+  },
+  {
+    q: 'My challenge is missing after changing device',
+    a: 'Challenges sync through your own iCloud account. Make sure you are signed in to the same Apple Account on both devices and that iCloud Drive is on, then open the app and give it a moment to sync.',
+  },
+  {
+    q: 'I bought Premium but the app says otherwise',
+    a: 'Go to Settings → Upgrade App and tap Restore Purchases. If it still does not unlock, email me with the Apple Account you purchased on and I will sort it out.',
+  },
+  {
+    q: 'I want to cancel my subscription',
+    a: 'Subscriptions are managed by Apple, not in the app. Open the App Store, tap your photo, choose Subscriptions, then pick Savelope. Cancelling there stops the next renewal.',
+  },
+  {
+    q: 'I want a refund',
+    a: 'Apple handles all refunds. Request one at reportaproblem.apple.com using the Apple Account that made the purchase.',
+  },
+  {
+    q: 'Reminders are not arriving',
+    a: 'Check iOS Settings → Notifications → Savelope and make sure notifications are allowed. Then confirm the reminder is switched on in the app, with the time you expect.',
+  },
+  {
+    q: 'How do I share a challenge with someone?',
+    a: "Open the challenge, tap the share icon in the top bar and invite the person. You'll both see the same envelopes and the same progress.",
+  },
+  {
+    q: 'I want my data deleted',
+    a: 'Deleting the app removes what is on your device. To clear what is synced, go to iOS Settings → your Apple Account → iCloud → Manage Account Storage. Email me if you want anything else removed.',
+  },
+];
+---
+
+<BaseLayout
+  title="Support — Savelope"
+  description="Help with Savelope: syncing, subscriptions, reminders, shared challenges, and how to get in touch."
+>
+  <section class="section">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow">Support</p>
+        <h1>How can I help?</h1>
+        <p class="lede">
+          Savelope is made by one person. Email me and you will get a reply from me, usually
+          within a couple of days.
+        </p>
+        <p class="contact">
+          <a class="btn btn--primary" href={`mailto:${SITE.supportEmail}?subject=Savelope%20support`}>
+            Email {SITE.supportEmail}
+          </a>
+        </p>
+        <p class="hint">
+          It helps a lot if you mention your iPhone model, your iOS version and the app version
+          from Settings.
+        </p>
+      </div>
+
+      <div class="topics">
+        {
+          topics.map((t) => (
+            <details class="card faq">
+              <summary>{t.q}</summary>
+              <p>{t.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <div class="center more">
+        <h2>Something else?</h2>
+        <p class="lede">
+          Feature requests are genuinely welcome — a good part of Savelope exists because
+          someone emailed and asked for it.
+        </p>
+        <p>
+          <a href={`mailto:${SITE.supportEmail}?subject=Savelope%20feedback`}>Send feedback</a>
+          &nbsp;·&nbsp;{' '}
+          <a href={SITE.appStoreUrl} rel="noopener">Rate on the App Store</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    margin-top: 2rem;
+  }
+
+  .hint {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+
+  .topics {
+    margin-top: 3.5rem;
+    display: grid;
+    gap: 1rem;
+    max-width: 780px;
+    margin-inline: auto;
+  }
+
+  .faq {
+    padding: 1.1rem 1.4rem;
+  }
+
+  .faq p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .faq summary {
+    cursor: pointer;
+    font-weight: 650;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq summary::after {
+    content: '+';
+    color: var(--accent);
+    font-size: 1.4rem;
+    line-height: 1;
+    flex: none;
+  }
+
+  .faq[open] summary::after {
+    content: '–';
+  }
+
+  .faq[open] summary {
+    margin-bottom: 0.8rem;
+  }
+
+  .more {
+    margin-top: 4.5rem;
+  }
+</style>

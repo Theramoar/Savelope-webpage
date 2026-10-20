@@ -1,0 +1,68 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  width?: number;
+  loading?: 'eager' | 'lazy';
+}
+
+const { src, alt, caption, width = 300, loading = 'lazy' } = Astro.props;
+---
+
+<figure class="phone" style={`--w:${width}px`}>
+  <div class="phone__shell">
+    <Picture
+      src={src}
+      alt={alt}
+      widths={[width, width * 2]}
+      sizes={`${width}px`}
+      formats={['avif', 'webp']}
+      loading={loading}
+    />
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .phone {
+    margin: 0;
+    width: var(--w);
+    max-width: 100%;
+  }
+
+  .phone__shell {
+    border-radius: 42px;
+    padding: 9px;
+    background: linear-gradient(170deg, #d7dde6, #aab4c2);
+    box-shadow: var(--shadow-lg);
+  }
+
+  :global(:root[data-theme='dark']) .phone__shell,
+  :global(:root:not([data-theme='light'])) .phone__shell {
+    background: linear-gradient(170deg, #39434f, #1d242d);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-theme='dark'])) .phone__shell {
+      background: linear-gradient(170deg, #d7dde6, #aab4c2);
+    }
+  }
+
+  .phone__shell :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 34px;
+  }
+
+  figcaption {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+</style>
