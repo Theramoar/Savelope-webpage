@@ -1,0 +1,59 @@
+# Savelope
+
+> Savelope is an iOS, iPadOS and macOS app for running the 100 envelope savings
+> challenge. Each of the 100 envelopes holds a different whole-dollar amount
+> between $1 and $100; you open one a day, set that amount aside yourself, and
+> the full set adds up to exactly $5,050. Savelope never connects to a bank
+> account and never moves money — it tells you what to set aside and keeps
+> score. Free to use, with an optional Premium subscription.
+
+## Key facts
+
+- **Platforms:** iPhone, iPad and Mac (App Store).
+- **App Store:** https://apps.apple.com/app/id1578843165
+- **Rating:** 4.8 from 442 ratings.
+- **Price:** free. Premium is an optional subscription managed by Apple.
+- **Bank access:** none. Savelope never asks for bank credentials and never
+  moves money. The user transfers the amount themselves, to a savings account
+  or to physical cash.
+- **Data and privacy:** challenges live on the user's device and sync through
+  their own iCloud account, so the developer cannot read them.
+- **Why $5,050:** it is the sum of every whole number from 1 to 100.
+
+## What it does
+
+- **The classic challenge:** 100 envelopes, $1 to $100, in a random order,
+  totalling $5,050.
+- **Custom challenges:** any total and any number of envelopes, paced daily,
+  weekly or monthly. A $1,000, $2,500 or $10,000 goal all work; the maths
+  adjusts.
+- **Four distribution modes:** random (for suspense), increasing (start
+  gently), decreasing (front-load the big amounts), or equal.
+- **Daily reminder:** one notification a day, at a time the user picks.
+- **Shared challenges:** run one with family or friends, with synced progress.
+- **Shareable progress images** for milestones.
+- **Missing a day costs nothing.** Envelopes do not expire and there is no
+  penalty or streak to break.
+
+### Premium adds
+
+- Unlimited simultaneous challenges
+- Analytics: consistency, history and a calendar of every envelope opened
+- Custom themes, including photo backgrounds
+- Per-envelope notes
+- Six alternate app icons
+
+## Pages
+
+- [Home](https://savelopeapp.com/): what the challenge is, how it works,
+  features, and a FAQ.
+- [Support](https://savelopeapp.com/support/): syncing, subscriptions, refunds,
+  reminders, shared challenges, data deletion.
+- [Privacy Policy](https://savelopeapp.com/privacy/): what stays on the device,
+  what the app measures, which third-party services are involved.
+- [Terms of Use](https://savelopeapp.com/terms/): subscription, billing and
+  cancellation terms.
+
+## Contact
+
+Support email: mkuzdev@gmail.com

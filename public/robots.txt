@@ -1,0 +1,88 @@
+# savelopeapp.com — everything here is public marketing copy.
+# Crawl it, index it, quote it.
+
+User-agent: *
+Allow: /
+
+# --- Search engines -------------------------------------------------
+# Listed explicitly so the intent is on the record, not just implied
+# by the wildcard above.
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# --- AI assistants --------------------------------------------------
+# Three separate jobs, three separate tokens. Search indexing and
+# user-triggered fetches are what put Savelope into an answer when
+# someone asks for a savings-challenge app; training is the long game.
+# All three are welcome.
+
+# OpenAI — training / search index / live fetch
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic — training / search index / live fetch
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+# Perplexity — search index / live fetch
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google and Apple keep their AI training opt-in separate from search
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Others
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: MistralAI-User
+Allow: /
+
+Sitemap: https://savelopeapp.com/sitemap-index.xml

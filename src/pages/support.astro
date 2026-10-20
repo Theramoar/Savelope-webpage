@@ -36,11 +36,24 @@ const topics = [
     a: 'Deleting the app removes what is on your device. To clear what is synced, go to iOS Settings → your Apple Account → iCloud → Manage Account Storage. Email me if you want anything else removed.',
   },
 ];
+
+/** The same questions again as FAQPage, so crawlers can lift the answers. */
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${new URL('/support', Astro.site).href}#faq`,
+  mainEntity: topics.map((t) => ({
+    '@type': 'Question',
+    name: t.q,
+    acceptedAnswer: { '@type': 'Answer', text: t.a },
+  })),
+};
 ---
 
 <BaseLayout
   title="Support — Savelope"
   description="Help with Savelope: syncing, subscriptions, reminders, shared challenges, and how to get in touch."
+  jsonLd={[faqSchema]}
 >
   <section class="section">
     <div class="wrap">

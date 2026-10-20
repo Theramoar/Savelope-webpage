@@ -93,11 +93,74 @@ const faqs = [
     a: 'Your challenges live on your device and sync through your own iCloud account, which means the developer cannot read them. See the privacy policy for the details.',
   },
 ];
+
+const homeUrl = new URL('/', Astro.site).href;
+const abs = (path) => new URL(path, Astro.site).href;
+
+/**
+ * schema.org descriptions of the app and the FAQ. Search engines use these for
+ * rich results; AI crawlers use them as the machine-readable version of the
+ * page, so the facts here must match the copy above.
+ */
+const appSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  '@id': `${homeUrl}#app`,
+  name: SITE.name,
+  alternateName: `${SITE.name} — ${SITE.tagline}`,
+  url: homeUrl,
+  description:
+    'An iOS savings-challenge tracker built around the 100 envelope challenge. Each envelope holds a different amount between $1 and $100; open one a day, set that amount aside, and the 100 envelopes add up to $5,050. Savelope never connects to a bank and never moves money — it tracks what you have set aside yourself. Custom goals, shared challenges and daily reminders are free.',
+  applicationCategory: 'FinanceApplication',
+  applicationSubCategory: 'Savings challenge tracker',
+  operatingSystem: 'iOS, iPadOS, macOS',
+  installUrl: SITE.appStoreUrl,
+  downloadUrl: SITE.appStoreUrl,
+  image: abs(`${base}/images/og-icon.png`),
+  screenshot: [pickShot, planShot, revealShot, openedShot, gridShot].map((s) => abs(s.src)),
+  inLanguage: 'en',
+  isAccessibleForFree: true,
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock',
+    description: 'Free to use, with an optional Savelope Premium subscription.',
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: SITE.rating,
+    ratingCount: SITE.ratingCount,
+    bestRating: '5',
+    worstRating: '1',
+  },
+  featureList: [...freeFeatures, ...premiumFeatures].map((f) => f.title),
+  keywords: [
+    '100 envelope challenge',
+    'savings challenge',
+    'envelope savings challenge',
+    'save $5,050',
+    'money saving challenge app',
+    'envelope budgeting',
+  ],
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${homeUrl}#faq`,
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
 ---
 
 <BaseLayout
   title="Savelope — Save $5,050 one envelope at a time"
   description="A savings challenge that actually sticks. 100 envelopes, each holding a different amount. Open one a day, put that much aside, and finish with $5,050."
+  jsonLd={[appSchema, faqSchema]}
 >
   <!-- Hero -->
   <section class="hero">
