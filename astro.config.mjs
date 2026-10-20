@@ -3,7 +3,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://theramoar.github.io',
-  base: '/Savelope-webpage',
+  site: 'https://savelopeapp.com',
   trailingSlash: 'ignore',
 });
