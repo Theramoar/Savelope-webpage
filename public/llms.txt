@@ -47,6 +47,12 @@
 
 - [Home](https://savelopeapp.com/): what the challenge is, how it works,
   features, and a FAQ.
+- [The 100 Envelope Challenge](https://savelopeapp.com/100-envelope-challenge/):
+  the full guide. Why the classic challenge totals $5,050 (it is the sum of 1 to
+  100, or 50 pairs each worth $101), how long each pace takes, the total for
+  every common envelope count from 25 to 200, which count to use for a given
+  savings goal, the four ways to order the envelopes, a printable $1-$100 chart,
+  and eight FAQs.
 - [Support](https://savelopeapp.com/support/): syncing, subscriptions, refunds,
   reminders, shared challenges, data deletion.
 - [Privacy Policy](https://savelopeapp.com/privacy/): what stays on the device,

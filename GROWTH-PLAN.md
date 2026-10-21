@@ -63,30 +63,30 @@ Checked against the real App Store listing (id `1578843165`):
 
 Everything downstream leaks value until this is done. Start here.
 
-### App Store Connect — entered, not yet live
+### App Store Connect — submitted with 2.1.11, in review
 
-Checked 2026-10-21 against Apple's own public data (`itunes.apple.com/lookup` and the
-rendered store page). All three edits are saved on your side but **none is visible to
-Apple's public endpoints yet**:
+**Version 2.1.11 went to review on 2026-10-21 carrying the rename.** All three edits
+turned out to be version-level metadata, so they ship together when 2.1.11 is
+approved — nothing propagates before that. Re-checked after submission; the public
+listing still shows the old values, which is exactly right for an app in review:
 
-| Field | Public value today | Wanted |
+| Field | Public value (2.1.10) | Ships with 2.1.11 |
 |---|---|---|
 | App name | `Saving Money Challenge` | `Savelope: Saving Money Challenge` |
 | Marketing URL (`sellerUrl`) | *none* | `https://savelopeapp.com/` |
 | Privacy policy | `savelope.flycricket.io/privacy.html` | `https://savelopeapp.com/privacy/` |
 
-Latest public version is 2.1.10, released 2026-10-06 — no submission since.
+- [~] Marketing URL, rename and privacy policy — **all in review with 2.1.11**
+- [ ] **If the version is set to manual release, remember to release it** once
+      approved. Approval alone changes nothing public.
+- [ ] Once live, re-verify all three (ask me — it is one lookup call) and expect a
+      few hours of CDN lag on the rendered store page even after the API updates.
 
-- [~] Marketing URL `https://savelopeapp.com/` — entered, not public
-- [~] Rename to `Savelope: Saving Money Challenge` — entered, not public.
-      **The name is version-level metadata: it goes live only when a new version is
-      approved.** Leave it staged in the pending version; it ships with your next
-      release. Renaming is still free and does not reset the 442 reviews.
-- [~] Privacy policy → `https://savelopeapp.com/privacy/` — entered, not public
-- [ ] Confirm in App Store Connect whether these sit in a **pending version** or
-      were saved to the live listing. If the latter, they should propagate within a
-      few hours — ask me to re-run the check. If the former, they are gated on the
-      next submission, and only the rename genuinely needs to be.
+When it lands, three things change at once: the store page starts linking to
+`savelopeapp.com`, the privacy policy stops pointing at flycricket, and "Savelope"
+becomes a distinctly recommendable token instead of a generic phrase. The
+`alternateName` aliases already shipped on the site stay correct either way — they
+list both the old and new store names.
 
 ### Webmaster tools — next up
 
@@ -167,10 +167,22 @@ directly.
 
 Hub and spoke, as an Astro content collection so adding posts stays cheap.
 
-- [ ] **Days 1–2 · `/100-envelope-challenge/` — the hub.** Definitive: the $5,050
-      arithmetic (the sum of 1…100), every variant, a printable chart. The single
-      page most likely to be retrieved. Does not depend on Phase 2 to be worth
-      writing.
+> **Note, 2026-10-21.** The hub was built as a plain `.astro` page, not a
+> collection entry. It is one-off structured content — computed tables and a
+> generated chart, not prose — and a collection would have fought it. Introduce
+> the collection with the first listicle spokes, which *are* article-shaped and
+> repetitive; that is where it pays for itself.
+
+- [x] **`/100-envelope-challenge/` — the hub.** Done 2026-10-21, ahead of Phase 2
+      as planned. Answer-first lede, the $5,050 arithmetic shown as 50 pairs of
+      $101 plus the general rule n(n+1)/2, a five-row pacing table, totals for
+      seven envelope counts from 25 to 200, a reverse table (goal → envelope
+      count), the four orderings, a printable $1–$100 chart and eight FAQs.
+      **Every figure derives from one `triangular()` helper in the frontmatter**,
+      so the prose and the tables cannot drift apart. `Article` + `HowTo` +
+      `FAQPage` + `BreadcrumbList`, with `datePublished`/`dateModified`. Linked
+      from the header, the footer and the home page, and listed in `llms.txt`.
+      Fully static — no JavaScript, so every AI crawler sees the whole thing.
 - [ ] **Days 3–5 · the free tools.** A calculator earns links articles don't.
 - [ ] **Days 6–10 · the listicles.** Honest ones that name MWM's app, Goodbudget
       and Qapital alongside Savelope. A listicle naming only us gets discounted by
@@ -226,7 +238,12 @@ Unlinked mentions count here even though they do nothing for PageRank.
       live key file matches before posting, reads the URL list from the sitemap,
       and is `continue-on-error` so a ping failure never fails a good deploy.
       Reaches Bing, Yandex, Seznam and Naver — not Google.
-- [ ] `BreadcrumbList`, `datePublished`, `dateModified` on the Phase 3 pages. Dates
+      **Confirmed working 2026-10-21:** a manual POST of all four sitemap URLs
+      returned `HTTP 200` (key validated; `202` would have meant validation still
+      pending). `api.indexnow.org` answered while Bing Webmaster Tools itself was
+      down, so that outage was the frontend, not the indexing side.
+- [~] `BreadcrumbList`, `datePublished`, `dateModified` on the Phase 3 pages. Done
+      on the hub; repeat it on each new page as it is written. Dates
       disproportionately help on AI surfaces, which lean on freshness.
 - [x] `src/pages/404.astro` — done 2026-10-21. `noindex, follow`, excluded from
       the sitemap, links to all four real pages.

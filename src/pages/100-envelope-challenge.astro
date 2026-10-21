@@ -1,0 +1,702 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AppStoreButton from '../components/AppStoreButton.astro';
+import { SITE } from '../config';
+import { schemaIds } from '../schema';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const ids = schemaIds(Astro.site);
+const pageUrl = new URL(`${base}/100-envelope-challenge/`, Astro.site).href;
+
+const published = '2026-10-21';
+const modified = '2026-10-21';
+
+/**
+ * Every figure on this page comes from one formula, so the prose and the tables
+ * cannot drift apart: the envelopes 1..n add up to n(n+1)/2.
+ */
+const triangular = (n) => (n * (n + 1)) / 2;
+const money = (n) => `$${n.toLocaleString('en-US')}`;
+
+const CLASSIC = 100;
+const CLASSIC_TOTAL = triangular(CLASSIC); // 5050
+
+const sizes = [
+  { n: 25, note: 'A fortnight-and-a-bit. Good for a first run.' },
+  { n: 50, note: 'The half challenge. Same idea, half the ceiling.' },
+  { n: 52, note: 'Matches the 52-week challenge, one envelope a week.' },
+  { n: 75, note: 'A middle distance if $100 days feel steep.' },
+  { n: 100, note: 'The classic. $1 to $100, nothing repeated.' },
+  { n: 150, note: 'For a deposit or a long trip fund.' },
+  { n: 200, note: 'Two years of weekly envelopes.' },
+];
+
+const pacing = [
+  { label: 'One a day', detail: '100 envelopes, one per day', span: '100 days — about 3 months and 1 week' },
+  { label: 'One every other day', detail: 'Half the pressure, double the span', span: '200 days — about 6 and a half months' },
+  { label: 'Two a week', detail: 'Say Wednesdays and Sundays', span: '50 weeks — just under a year' },
+  { label: 'Four per payday', detail: 'Paid fortnightly, four envelopes each time', span: '25 paydays — about 50 weeks' },
+  { label: 'One a week', detail: 'The slowest common pace', span: '100 weeks — about 1 year and 11 months' },
+];
+
+/** For a savings target, the envelope count whose run lands either side of it. */
+const targets = [500, 1000, 2500, 5000, 10000].map((target) => {
+  let n = 1;
+  while (triangular(n + 1) <= target) n++;
+  return {
+    target,
+    under: { n, total: triangular(n) },
+    over: { n: n + 1, total: triangular(n + 1) },
+  };
+});
+
+const envelopes = Array.from({ length: CLASSIC }, (_, i) => i + 1);
+
+const howToSteps = [
+  {
+    name: 'Label 100 envelopes',
+    text: 'Number them 1 through 100. Every envelope gets a different number, and no number repeats.',
+  },
+  {
+    name: 'Shuffle them',
+    text: 'Put them in a box face down. Not knowing which amount is coming is the part that keeps the habit alive.',
+  },
+  {
+    name: 'Draw one a day',
+    text: 'Take a single envelope at random. The number on it is the number of dollars you owe yourself today.',
+  },
+  {
+    name: 'Set that amount aside',
+    text: 'Move it to a savings account, or put the cash in the envelope. Keep it somewhere you will not casually spend it.',
+  },
+  {
+    name: 'Repeat until the box is empty',
+    text: `After 100 draws every envelope is open and you have set aside ${money(CLASSIC_TOTAL)}.`,
+  },
+];
+
+const faqs = [
+  {
+    q: 'How much is the 100 envelope challenge?',
+    a: `${money(CLASSIC_TOTAL)}. The envelopes hold every whole-dollar amount from $1 to $100 exactly once, and those hundred numbers add up to ${money(CLASSIC_TOTAL)}.`,
+  },
+  {
+    q: 'How long does the 100 envelope challenge take?',
+    a: 'At one envelope a day, 100 days — a little over three months. At one a week it takes 100 weeks, close to two years. The total saved is the same either way; only the pace changes.',
+  },
+  {
+    q: 'What if I cannot afford the $100 envelope?',
+    a: 'Three options. Swap that envelope for a day you can afford and come back to it. Halve every amount, which turns the challenge into a $2,525 run. Or use fewer envelopes — 50 envelopes tops out at $50 a day and totals $1,275.',
+  },
+  {
+    q: 'Do I need actual cash and actual envelopes?',
+    a: 'No. The envelopes are a scheduling device, not a storage method. Most people transfer the amount to a savings account and never handle cash. Physical envelopes work if you prefer something you can see filling up.',
+  },
+  {
+    q: 'What happens if I miss a day?',
+    a: 'Nothing. There is no streak to break and envelopes do not expire. Draw two tomorrow, or just carry on. A challenge you resume after a gap still finishes at the same total.',
+  },
+  {
+    q: 'What is the 50 envelope challenge?',
+    a: `The same rules with envelopes numbered 1 to 50, which totals ${money(triangular(50))}. It suits a shorter run or a smaller budget.`,
+  },
+  {
+    q: 'Can two people do the challenge together?',
+    a: 'Yes, and it is one of the more reliable ways to finish. Either split each envelope between you, or each run your own set and compare progress. Savelope syncs a shared challenge between people so both see the same envelopes.',
+  },
+  {
+    q: 'Is there an app for the 100 envelope challenge?',
+    a: `Savelope is one, for iPhone, iPad and Mac. It draws the envelope, tracks the total and sends one reminder a day. It never connects to a bank and never moves money — you move it yourself. It is rated ${SITE.rating} from ${SITE.ratingCount} ratings.`,
+  },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: `The 100 Envelope Challenge: how it works and why it totals ${money(CLASSIC_TOTAL)}`,
+  description: `The 100 envelope challenge saves ${money(CLASSIC_TOTAL)} in 100 days. Envelopes numbered $1 to $100, drawn one a day. The arithmetic, every common variant and a printable chart.`,
+  mainEntityOfPage: pageUrl,
+  datePublished: published,
+  dateModified: modified,
+  inLanguage: 'en',
+  author: { '@id': ids.org },
+  publisher: { '@id': ids.org },
+  about: {
+    '@type': 'Thing',
+    name: '100 envelope challenge',
+    description: `A savings challenge of 100 envelopes holding every whole-dollar amount from $1 to $100, totalling ${money(CLASSIC_TOTAL)}.`,
+  },
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  '@id': `${pageUrl}#howto`,
+  name: 'How to do the 100 envelope challenge',
+  description: `Draw one of 100 numbered envelopes a day and set aside that many dollars, finishing at ${money(CLASSIC_TOTAL)}.`,
+  totalTime: 'P100D',
+  estimatedCost: {
+    '@type': 'MonetaryAmount',
+    currency: 'USD',
+    value: String(CLASSIC_TOTAL),
+  },
+  supply: [
+    { '@type': 'HowToSupply', name: '100 envelopes, or an app that tracks them' },
+    { '@type': 'HowToSupply', name: 'A savings account or a place to keep cash' },
+  ],
+  step: howToSteps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.name,
+    text: s.text,
+  })),
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': `${pageUrl}#breadcrumbs`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: SITE.name, item: ids.home },
+    { '@type': 'ListItem', position: 2, name: 'The 100 Envelope Challenge', item: pageUrl },
+  ],
+};
+---
+
+<BaseLayout
+  title={`The 100 Envelope Challenge — save ${money(CLASSIC_TOTAL)} in 100 days`}
+  description={`The 100 envelope challenge totals ${money(CLASSIC_TOTAL)}. Why that number, how long it takes, every common variant, and a printable 1–100 chart.`}
+  jsonLd={[articleSchema, howToSchema, faqSchema, breadcrumbSchema]}
+>
+  <nav class="crumbs wrap" aria-label="Breadcrumb">
+    <a href={`${base}/`}>{SITE.name}</a>
+    <span aria-hidden="true">→</span>
+    <span aria-current="page">The 100 Envelope Challenge</span>
+  </nav>
+
+  <section class="section hero">
+    <div class="wrap prose">
+      <p class="eyebrow">The complete guide</p>
+      <h1>The 100 Envelope Challenge</h1>
+      <p class="lede">
+        Number 100 envelopes from 1 to 100. Draw one at random each day and set aside that
+        many dollars. When the last envelope is open you have saved{' '}
+        <strong>{money(CLASSIC_TOTAL)}</strong>.
+      </p>
+      <p class="prose--meta">
+        Updated {SITE.lastUpdated} · About 6 minutes to read
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose">
+      <h2 id="why-5050">Why it comes to {money(CLASSIC_TOTAL)}</h2>
+      <p>
+        The total is fixed before you start. Each envelope holds a different whole-dollar
+        amount from $1 to $100, so finishing means you have set aside every one of those
+        numbers exactly once.
+      </p>
+      <p>Pair them off from the outside in and the reason becomes obvious:</p>
+      <ul class="pairs">
+        <li><span>$1 + $100</span><b>$101</b></li>
+        <li><span>$2 + $99</span><b>$101</b></li>
+        <li><span>$3 + $98</span><b>$101</b></li>
+        <li class="pairs__gap"><span>…</span><b>…</b></li>
+        <li><span>$50 + $51</span><b>$101</b></li>
+      </ul>
+      <p>
+        Fifty pairs, each worth $101. Fifty times 101 is{' '}
+        <strong>{money(CLASSIC_TOTAL)}</strong>.
+      </p>
+      <div class="formula" role="note">
+        <p class="formula__label">The general rule</p>
+        <p class="formula__eq">1 + 2 + … + n = n × (n + 1) ÷ 2</p>
+        <p class="formula__note">
+          For 100 envelopes: 100 × 101 ÷ 2 = {money(CLASSIC_TOTAL)}. The same formula gives
+          the total for any envelope count, which is what the table below is built from.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap prose">
+      <h2 id="how-it-works">How the challenge works</h2>
+      <ol class="steps">
+        {
+          howToSteps.map((s) => (
+            <li>
+              <h3>{s.name}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p>
+        That is the whole method. The randomness is doing real work: a fixed $50.50 a day
+        would reach the same total, but a draw you cannot predict is far easier to keep up
+        with than a standing order you stop noticing.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose">
+      <h2 id="how-long">How long it takes</h2>
+      <p>
+        The pace is yours to pick. It changes the finish date and nothing else — the total
+        is always {money(CLASSIC_TOTAL)}.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Pace</th><th>What it means</th><th>Time to finish</th></tr>
+          </thead>
+          <tbody>
+            {
+              pacing.map((p) => (
+                <tr>
+                  <td><strong>{p.label}</strong></td>
+                  <td>{p.detail}</td>
+                  <td>{p.span}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap prose">
+      <h2 id="variants">Every common variant</h2>
+      <p>
+        Change the number of envelopes and the total changes with it. These are the counts
+        people actually run, with the total each one finishes at.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Envelopes</th><th>Amounts</th><th>Total saved</th><th>Why pick it</th></tr>
+          </thead>
+          <tbody>
+            {
+              sizes.map((s) => (
+                <tr class={s.n === CLASSIC ? 'is-classic' : undefined}>
+                  <td><strong>{s.n}</strong></td>
+                  <td>$1 – ${s.n}</td>
+                  <td><strong>{money(triangular(s.n))}</strong></td>
+                  <td>{s.note}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="prose--meta">
+        Every total above is n × (n + 1) ÷ 2 for that envelope count.
+      </p>
+
+      <h3 id="by-target">Starting from a savings target instead</h3>
+      <p>
+        If you know what you want to save rather than how many envelopes you want to fill,
+        work backwards. These are the envelope counts that land either side of some common
+        goals.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Goal</th><th>Just under</th><th>Just over</th></tr>
+          </thead>
+          <tbody>
+            {
+              targets.map((t) => (
+                <tr>
+                  <td><strong>{money(t.target)}</strong></td>
+                  <td>{t.under.n} envelopes — {money(t.under.total)}</td>
+                  <td>{t.over.n} envelopes — {money(t.over.total)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Nothing says the amounts have to be $1 steps, either. For an exact figure, keep 100
+        envelopes and scale every amount by your goal divided by {money(CLASSIC_TOTAL)} — a
+        $2,000 goal makes the $100 envelope a $39.60 one.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose">
+      <h2 id="rules">Four ways to order the envelopes</h2>
+      <div class="grid grid--2 orders">
+        <div class="card">
+          <h3>Random</h3>
+          <p>
+            Draw blind. The usual choice, and the one that keeps the challenge interesting
+            past the first fortnight.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Increasing</h3>
+          <p>
+            $1 first, $100 last. Starts almost free and ends expensive. Good if your income
+            is rising, punishing if it is not.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Decreasing</h3>
+          <p>
+            $100 first, $1 last. Front-loads the hard part while motivation is highest, and
+            coasts to the finish.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Equal</h3>
+          <p>
+            $50.50 every day. Predictable and budgetable, but it gives up the suspense that
+            makes the challenge stick.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section chartsec">
+    <div class="wrap">
+      <div class="prose">
+        <p class="chart__printtitle">The 100 Envelope Challenge · savelopeapp.com</p>
+        <h2 id="chart">The printable 100 envelope chart</h2>
+        <p>
+          Every amount, $1 to $100. Print this page and cross one off each time you set the
+          money aside — the chart prints on its own, without the navigation or the rest of
+          the article.
+        </p>
+      </div>
+      <div class="chart" role="list" aria-label="Envelope amounts, $1 to $100">
+        {envelopes.map((n) => <span class="chart__cell" role="listitem">${n}</span>)}
+      </div>
+      <p class="chart__total prose--meta center">
+        100 envelopes · {money(CLASSIC_TOTAL)} in total
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose">
+      <h2 id="faq">Questions people ask</h2>
+      {
+        faqs.map((f) => (
+          <div class="qa">
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap prose center">
+      <h2>Run it without the envelopes</h2>
+      <p class="lede">
+        {SITE.name} draws the envelope, keeps the running total and reminds you once a day.
+        It never connects to a bank and never moves money — you do that part yourself.
+      </p>
+      <p class="cta">
+        <AppStoreButton />
+      </p>
+      <p class="prose--meta">
+        Rated {SITE.rating} from {SITE.ratingCount} ratings · Free, with optional Premium ·{' '}
+        <a href={`${base}/`}>More about {SITE.name}</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .crumbs {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding-top: 1.5rem;
+  }
+
+  .crumbs span[aria-current] {
+    color: var(--text);
+  }
+
+  .hero {
+    padding-bottom: calc(var(--section-y) * 0.6);
+  }
+
+  .hero .lede {
+    font-size: 1.3rem;
+    color: var(--text);
+  }
+
+  /* The pairing that explains $5,050 */
+  .pairs {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.4rem;
+    max-width: 22rem;
+  }
+
+  .pairs li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pairs li:last-child {
+    border-bottom: 0;
+  }
+
+  .pairs__gap {
+    color: var(--text-muted);
+  }
+
+  .pairs b {
+    color: var(--accent);
+  }
+
+  .formula {
+    background: var(--accent-soft);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.6rem;
+    margin: 1.8rem 0;
+  }
+
+  .formula__label {
+    font-size: 0.82rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.6rem;
+  }
+
+  .formula__eq {
+    font-size: 1.25rem;
+    font-weight: 650;
+    margin: 0 0 0.6rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .formula__note {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.97rem;
+  }
+
+  /* Numbered steps */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+    margin: 0;
+  }
+
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 3.2rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .steps h3 {
+    margin: 0.2rem 0 0.3rem;
+  }
+
+  .steps p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  /* Tables */
+  .tablewrap {
+    overflow-x: auto;
+    margin: 1.4rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.97rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--bg-alt);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .is-classic td {
+    background: var(--accent-soft);
+  }
+
+  .orders h3 {
+    margin-top: 0;
+  }
+
+  .orders p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  /* The printable chart */
+  .chart {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-top: 2rem;
+  }
+
+  .chart__cell {
+    display: grid;
+    place-items: center;
+    padding: 0.55rem 0.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+
+  .chart__total {
+    margin-top: 1.2rem;
+  }
+
+  .qa {
+    border-top: 1px solid var(--border);
+    padding-top: 1.4rem;
+    margin-top: 1.4rem;
+  }
+
+  .qa h3 {
+    margin-top: 0;
+  }
+
+  .qa p {
+    color: var(--text-muted);
+    margin-bottom: 0;
+  }
+
+  .cta {
+    display: flex;
+    justify-content: center;
+    margin: 1.8rem 0 1rem;
+  }
+
+  @media (max-width: 719px) {
+    .chart {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  .chart__printtitle {
+    display: none;
+  }
+
+  /* Printing gives you the chart and nothing else: every other section goes. */
+  @media print {
+    :global(.hdr),
+    :global(.ftr),
+    .crumbs {
+      display: none !important;
+    }
+
+    .section:not(.chartsec) {
+      display: none !important;
+    }
+
+    .chartsec {
+      padding-block: 0;
+    }
+
+    .chart__printtitle {
+      display: block;
+      font-weight: 650;
+      margin: 0 0 0.6rem;
+      color: #000;
+    }
+
+    .chartsec h2 {
+      font-size: 1.3rem;
+      color: #000;
+    }
+
+    .chart {
+      gap: 0.25rem;
+      margin-top: 1rem;
+    }
+
+    .chart__cell {
+      padding: 0.75rem 0.2rem;
+      border-color: #999;
+      color: #000;
+      background: #fff;
+    }
+
+    .chart__total {
+      color: #000;
+    }
+  }
+</style>

@@ -226,6 +226,12 @@ const faqSchema = {
           ))
         }
       </ol>
+
+      <p class="center guidelink">
+        New to it? <a href={`${base}/100-envelope-challenge/`}>Read the full guide to the
+        100 envelope challenge</a> — the arithmetic behind {SITE.classicTotal}, every
+        variant, and a printable chart.
+      </p>
     </div>
   </section>
 
@@ -547,6 +553,15 @@ const faqSchema = {
 
   .faq[open] summary {
     margin-bottom: 0.8rem;
+  }
+
+  /* Link through to the long-form guide */
+  .guidelink {
+    margin-top: 2.4rem;
+    margin-bottom: 0;
+    color: var(--text-muted);
+    max-width: 58ch;
+    margin-inline: auto;
   }
 
   /* CTA */
