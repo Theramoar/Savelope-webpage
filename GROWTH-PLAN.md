@@ -463,10 +463,22 @@ don't click), keyword-density tooling, link-building packages, performance work.
 
 ## Phase 6 — measurement · **[agent]** + **[you]** · ~20 min
 
-- [ ] Cloudflare free tier in front of GitHub Pages. DNS is **already on
+- [~] Cloudflare free tier in front of GitHub Pages. DNS is **already on
       Cloudflare**, but the records are DNS-only — responses still carry
       `server: GitHub.com` and no `cf-ray`, so nothing is proxied and nothing is
       logged. This is one toggle per record, not a migration.
+      **Reassessed 2026-10-21 — probably not worth the risk now.** Two traps sit
+      behind that toggle. Cloudflare's SSL/TLS mode must be **Full (strict)**
+      before proxying; on **Flexible** the site enters an infinite redirect loop,
+      and more so once Enforce HTTPS is on. And GitHub renews its Let's Encrypt
+      certificate by HTTP validation, which the proxy can intercept — a failure
+      that would not surface until the current certificate expires on
+      **18 Jan 2027**, long after anyone connected it to today's change.
+      Meanwhile the reason for doing it — seeing whether AI crawlers fetch the
+      site — is now partly covered free by Bing's **AI Performance** tab. If it
+      is done anyway: set Full (strict) first, proxy second, verify `cf-ray`
+      appears and the site still serves, and put a January reminder on the
+      certificate.
       **Pages logs nothing**, so
       right now there is no way to tell whether `OAI-SearchBot` or
       `Claude-SearchBot` has ever fetched us — the one signal that says this worked.
