@@ -247,6 +247,37 @@ the calculator page was not built on search demand. That was never its argument 
 the plan's case was that a tool earns links an article does not. It stands or
 falls on that, and should be judged on referring domains, not impressions.
 
+### Google Trends is not a volume source
+
+Checked 2026-10-21 for `Best Money Saving Apps` (worldwide, 12 months): a very
+spiky curve peaking at 100, "+300% on the previous year".
+
+**None of that is volume.** Trends normalises every term to its own peak, so 100
+means "this term's busiest week", not a quantity. A term with fifty searches a
+month and one with half a million both top out at 100. Using it to decide which
+pages to build would be exactly the invented-volume problem Phase 2 exists to
+prevent.
+
+Two further cautions on that particular chart:
+
+- **The spikiness argues the term is small.** High-volume queries give smooth
+  seasonal curves; a flat baseline punctuated by isolated spikes is what sparse
+  sampling looks like once it is normalised. So the shape is weak evidence
+  *against* this being a big term.
+- **"+300%" on a small base is not news**, and the dotted tail at the right edge
+  is Trends' incomplete-period marker, not a collapse in interest.
+
+**What Trends is genuinely good for: comparison mode.** Put an unknown term on the
+same chart as one whose real figure is already known — `100 envelope challenge`,
+at 703 Bing impressions over twelve months — and the relative heights become
+meaningful, because one of them is anchored. Set the region to **United States**
+while doing it; ~72% of our measurable demand is there and worldwide only dilutes
+the signal.
+
+For absolute figures the free options remain Bing Webmaster Tools' Keyword
+Research and Google Keyword Planner (free with an Ads account, no spend needed,
+though it buckets into ranges unless you are spending).
+
 ### Still to pull
 
 - [ ] The **Question keywords** tab for both head terms — the highest-value one
