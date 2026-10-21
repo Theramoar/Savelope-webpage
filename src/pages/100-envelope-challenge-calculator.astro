@@ -1,0 +1,721 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AppStoreButton from '../components/AppStoreButton.astro';
+import { SITE } from '../config';
+import { schemaIds } from '../schema';
+import {
+  CLASSIC_COUNT,
+  CLASSIC_TOTAL,
+  PACES,
+  amountsInCents,
+  money,
+  duration,
+  summarise,
+  triangular,
+} from '../lib/envelopes';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const ids = schemaIds(Astro.site);
+const hubUrl = new URL(`${base}/100-envelope-challenge/`, Astro.site).href;
+const pageUrl = new URL(`${base}/100-envelope-challenge-calculator/`, Astro.site).href;
+
+const published = '2026-10-21';
+const modified = '2026-10-21';
+
+/**
+ * The page renders the classic challenge in full before any JavaScript runs.
+ * Most AI crawlers do not execute scripts, and a calculator that is an empty
+ * div until hydration is invisible to every one of them.
+ */
+const classicCents = CLASSIC_TOTAL * 100;
+const classicAmounts = amountsInCents(CLASSIC_COUNT, classicCents);
+const classic = summarise(CLASSIC_COUNT, classicCents, 1);
+
+/** A worked example with a goal that does not divide neatly, shown statically. */
+const exCount = 100;
+const exCents = 200000;
+const exAmounts = amountsInCents(exCount, exCents);
+const exFactor = exCents / 100 / CLASSIC_TOTAL;
+
+const goalRows = [1000, 2000, 2500, 5000, 10000].map((dollars) => {
+  const cents = dollars * 100;
+  const a = amountsInCents(CLASSIC_COUNT, cents);
+  return {
+    goal: cents,
+    smallest: a[0],
+    largest: a[a.length - 1],
+    average: Math.round(cents / CLASSIC_COUNT),
+  };
+});
+
+const howToSteps = [
+  {
+    name: 'Add up the envelope numbers',
+    text: 'For n envelopes that is n × (n + 1) ÷ 2. A hundred envelopes come to 5,050, which is why the classic challenge saves $5,050.',
+  },
+  {
+    name: 'Divide your goal by that total',
+    text: `For a $2,000 goal over 100 envelopes: 2,000 ÷ 5,050 = ${exFactor.toFixed(4)}. That is your scaling factor.`,
+  },
+  {
+    name: 'Multiply each envelope number by the factor',
+    text: `Envelope 1 holds ${money(exAmounts[0])}, envelope 50 holds ${money(exAmounts[49])} and envelope 100 holds ${money(exAmounts[99])}. Round to the cent and put any remainder on the largest envelope so the set still adds up exactly.`,
+  },
+];
+
+const faqs = [
+  {
+    q: 'How much do you save with 100 envelopes?',
+    a: `${money(classicCents)}, if the envelopes hold $1 to $100. That is the sum of every whole number from 1 to 100. Any other total works too — the calculator scales all 100 amounts to whatever goal you set.`,
+  },
+  {
+    q: 'How do I do the 100 envelope challenge with a smaller budget?',
+    a: `Keep 100 envelopes and lower the total. A $1,000 goal over 100 envelopes runs from ${money(goalRows[0].smallest)} to ${money(goalRows[0].largest)}, averaging ${money(goalRows[0].average)} a day instead of $50.50.`,
+  },
+  {
+    q: 'Do the amounts have to be whole dollars?',
+    a: 'Only in the classic version. Once you scale to a custom goal the amounts land on cents, which is fine if you are transferring the money rather than handling cash. Round them yourself if you want notes and coins.',
+  },
+  {
+    q: 'Why does the largest envelope sometimes look slightly off?',
+    a: 'Rounding a hundred scaled amounts to the nearest cent leaves a remainder of a few cents. That remainder goes on the largest envelope so the set adds up to your goal exactly rather than a few cents either side of it.',
+  },
+  {
+    q: 'How long will my challenge take?',
+    a: `That depends only on your pace, not your goal. A hundred envelopes take ${duration(100)} at one a day, ${duration(700)} at one a week.`,
+  },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: '100 Envelope Challenge Calculator',
+  description:
+    'Work out what each of your envelopes holds for any savings goal and any envelope count, plus how long the challenge takes at your chosen pace.',
+  mainEntityOfPage: pageUrl,
+  datePublished: published,
+  dateModified: modified,
+  inLanguage: 'en',
+  author: { '@id': ids.org },
+  publisher: { '@id': ids.org },
+  isPartOf: { '@id': `${hubUrl}#article` },
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  '@id': `${pageUrl}#howto`,
+  name: 'How to calculate 100 envelope challenge amounts for any goal',
+  description:
+    'Scale the envelope amounts to a savings goal by dividing the goal by the sum of the envelope numbers.',
+  step: howToSteps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.name,
+    text: s.text,
+  })),
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': `${pageUrl}#breadcrumbs`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: SITE.name, item: ids.home },
+    { '@type': 'ListItem', position: 2, name: 'The 100 Envelope Challenge', item: hubUrl },
+    { '@type': 'ListItem', position: 3, name: 'Calculator', item: pageUrl },
+  ],
+};
+---
+
+<BaseLayout
+  title="100 Envelope Challenge Calculator — any goal, any envelope count"
+  description={`Work out what each envelope holds for any savings goal. The classic 100 envelopes total ${money(classicCents)}; set your own goal, envelope count and pace and get every amount plus a finish date.`}
+  jsonLd={[articleSchema, howToSchema, faqSchema, breadcrumbSchema]}
+>
+  <nav class="crumbs wrap" aria-label="Breadcrumb">
+    <a href={`${base}/`}>{SITE.name}</a>
+    <span aria-hidden="true">→</span>
+    <a href={`${base}/100-envelope-challenge/`}>The 100 Envelope Challenge</a>
+    <span aria-hidden="true">→</span>
+    <span aria-current="page">Calculator</span>
+  </nav>
+
+  <section class="section hero">
+    <div class="wrap prose">
+      <p class="eyebrow">Free tool</p>
+      <h1>100 Envelope Challenge Calculator</h1>
+      <p class="lede">
+        Set a goal, an envelope count and a pace. Get the amount in every envelope and the
+        date you finish. The classic hundred envelopes hold $1 to $100 and total{' '}
+        <strong>{money(classicCents)}</strong>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section calcsec">
+    <div class="wrap">
+      <form class="calc" id="calc" novalidate>
+        <div class="calc__fields">
+          <div class="field">
+            <label for="count">Envelopes</label>
+            <input type="number" id="count" name="count" value={CLASSIC_COUNT} min="1" max="1000" step="1" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for="total">Total to save</label>
+            <div class="field__money">
+              <span aria-hidden="true">$</span>
+              <input type="number" id="total" name="total" value={CLASSIC_TOTAL} min="1" step="0.01" inputmode="decimal" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="pace">Pace</label>
+            <select id="pace" name="pace">
+              {PACES.map((p) => <option value={p.id} selected={p.id === 'daily'}>{p.label}</option>)}
+            </select>
+          </div>
+        </div>
+        <p class="calc__hint">
+          <button type="button" id="reset-classic" class="linkbtn">Reset to the classic challenge</button>{' '}
+          — 100 envelopes totalling {money(classicCents)}.
+        </p>
+      </form>
+
+      <div class="results" id="results" aria-live="polite">
+        <p class="results__headline">
+          You save <strong id="r-total">{money(classicCents)}</strong>{' '}
+          across <span id="r-count">{CLASSIC_COUNT}</span> envelopes.
+        </p>
+        <dl class="stats">
+          <div class="stat">
+            <dt>Smallest envelope</dt>
+            <dd id="r-smallest">{money(classic.smallestCents)}</dd>
+          </div>
+          <div class="stat">
+            <dt>Largest envelope</dt>
+            <dd id="r-largest">{money(classic.largestCents)}</dd>
+          </div>
+          <div class="stat">
+            <dt>Average</dt>
+            <dd id="r-average">{money(classic.averageCents)}</dd>
+          </div>
+          <div class="stat">
+            <dt>Time to finish</dt>
+            <dd id="r-duration">{duration(classic.days)}</dd>
+          </div>
+        </dl>
+        <p class="results__finish" id="r-finish" hidden></p>
+      </div>
+
+      <h2 class="amounts__title">Every envelope</h2>
+      <div class="chart" id="amounts">
+        {classicAmounts.map((c) => <span class="chart__cell">{money(c)}</span>)}
+      </div>
+      <p class="prose--meta center chart__total" id="r-footnote">
+        {CLASSIC_COUNT} envelopes · {money(classicCents)} in total
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose">
+      <h2 id="how">How to work it out yourself</h2>
+      <p>
+        There is no trick to it, and the arithmetic is worth knowing if you ever want to
+        check a chart someone hands you.
+      </p>
+      <ol class="steps">
+        {
+          howToSteps.map((s) => (
+            <li>
+              <h3>{s.name}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <h3 id="worked-example">A worked example: {money(exCents)} over {exCount} envelopes</h3>
+      <p>
+        $2,000 does not divide neatly into the envelope numbers, which makes it a better
+        example than a round one.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Step</th><th>Working</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sum of envelope numbers</td>
+              <td>100 × 101 ÷ 2</td>
+              <td><strong>{CLASSIC_TOTAL.toLocaleString('en-US')}</strong></td>
+            </tr>
+            <tr>
+              <td>Scaling factor</td>
+              <td>2,000 ÷ {CLASSIC_TOTAL.toLocaleString('en-US')}</td>
+              <td><strong>{exFactor.toFixed(4)}</strong></td>
+            </tr>
+            <tr>
+              <td>Envelope 1</td>
+              <td>1 × {exFactor.toFixed(4)}</td>
+              <td><strong>{money(exAmounts[0])}</strong></td>
+            </tr>
+            <tr>
+              <td>Envelope 50</td>
+              <td>50 × {exFactor.toFixed(4)}</td>
+              <td><strong>{money(exAmounts[49])}</strong></td>
+            </tr>
+            <tr>
+              <td>Envelope 100</td>
+              <td>100 × {exFactor.toFixed(4)}</td>
+              <td><strong>{money(exAmounts[99])}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="prose--meta">
+        Rounding every amount to the cent leaves a remainder of a few cents. It goes on the
+        largest envelope, so the hundred amounts add up to {money(exCents)} exactly rather
+        than landing a little either side of it.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap prose">
+      <h2 id="common-goals">Common goals over 100 envelopes</h2>
+      <p>
+        Every row keeps the hundred envelopes and the $1 : $2 : $3 shape of the original.
+        Only the scale changes.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Goal</th><th>Smallest</th><th>Largest</th><th>Average per envelope</th></tr>
+          </thead>
+          <tbody>
+            {
+              goalRows.map((r) => (
+                <tr class={r.goal === classicCents ? 'is-classic' : undefined}>
+                  <td><strong>{money(r.goal)}</strong></td>
+                  <td>{money(r.smallest)}</td>
+                  <td>{money(r.largest)}</td>
+                  <td>{money(r.average)}</td>
+                </tr>
+              ))
+            }
+            <tr class="is-classic">
+              <td><strong>{money(classicCents)}</strong></td>
+              <td>{money(classic.smallestCents)}</td>
+              <td>{money(classic.largestCents)}</td>
+              <td>{money(classic.averageCents)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        For the reasoning behind the classic total, and for variants that change the
+        envelope count rather than the goal, see{' '}
+        <a href={`${base}/100-envelope-challenge/`}>the full guide to the 100 envelope
+        challenge</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose">
+      <h2 id="faq">Questions people ask</h2>
+      {
+        faqs.map((f) => (
+          <div class="qa">
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap prose center">
+      <h2>Or let the app do it</h2>
+      <p class="lede">
+        {SITE.name} works out the amounts, draws one envelope a day and keeps the running
+        total. It never connects to a bank and never moves money — you do that part
+        yourself.
+      </p>
+      <p class="cta"><AppStoreButton /></p>
+      <p class="prose--meta">
+        Rated {SITE.rating} from {SITE.ratingCount} ratings ·{' '}
+        <a href={`${base}/100-envelope-challenge/`}>Read the full guide</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { PACES, amountsInCents, money, duration, summarise, triangular } from '../lib/envelopes';
+
+  const $ = (id: string) => document.getElementById(id);
+
+  const countEl = $('count') as HTMLInputElement | null;
+  const totalEl = $('total') as HTMLInputElement | null;
+  const paceEl = $('pace') as HTMLSelectElement | null;
+  const amountsEl = $('amounts');
+
+  if (countEl && totalEl && paceEl && amountsEl) {
+    const dateFmt = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+
+    const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
+
+    function render() {
+      const count = clamp(Math.floor(Number(countEl!.value) || 0), 1, 1000);
+      const dollars = Number(totalEl!.value);
+      if (!Number.isFinite(dollars) || dollars <= 0) return;
+
+      const cents = Math.round(dollars * 100);
+      const pace = PACES.find((p) => p.id === paceEl!.value) ?? PACES[0];
+      const s = summarise(count, cents, pace.step);
+      const amounts = amountsInCents(count, cents);
+
+      $('r-total')!.textContent = money(cents);
+      $('r-count')!.textContent = String(count);
+      $('r-smallest')!.textContent = money(s.smallestCents);
+      $('r-largest')!.textContent = money(s.largestCents);
+      $('r-average')!.textContent = money(s.averageCents);
+      $('r-duration')!.textContent = duration(s.days);
+
+      // The finish date is filled in here rather than at build time, so the page
+      // never ships a date that went stale the day after it deployed.
+      const end = new Date();
+      end.setDate(end.getDate() + s.days);
+      const finish = $('r-finish')!;
+      finish.textContent = `Starting today, the last envelope falls on ${dateFmt.format(end)}.`;
+      finish.hidden = false;
+
+      amountsEl!.replaceChildren(
+        ...amounts.map((c) => {
+          const el = document.createElement('span');
+          el.className = 'chart__cell';
+          el.textContent = money(c);
+          return el;
+        })
+      );
+
+      $('r-footnote')!.textContent = `${count} envelopes · ${money(cents)} in total`;
+    }
+
+    for (const el of [countEl, totalEl, paceEl]) {
+      el.addEventListener('input', render);
+      el.addEventListener('change', render);
+    }
+
+    $('reset-classic')?.addEventListener('click', () => {
+      countEl.value = '100';
+      totalEl.value = String(triangular(100));
+      paceEl.value = 'daily';
+      render();
+    });
+
+    render();
+  }
+</script>
+
+<style>
+  .crumbs {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding-top: 1.5rem;
+  }
+
+  .crumbs span[aria-current] {
+    color: var(--text);
+  }
+
+  .hero {
+    padding-bottom: calc(var(--section-y) * 0.5);
+  }
+
+  .hero .lede {
+    font-size: 1.25rem;
+    color: var(--text);
+  }
+
+  .calcsec {
+    padding-top: 0;
+  }
+
+  .calc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.6rem;
+    box-shadow: var(--shadow);
+  }
+
+  .calc__fields {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  @media (min-width: 720px) {
+    .calc__fields {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .field input,
+  .field select {
+    width: 100%;
+    font: inherit;
+    font-size: 1.1rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .field__money {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .field__money span {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+
+  .calc__hint {
+    margin: 1.1rem 0 0;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+
+  .linkbtn {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .results {
+    margin-top: 2rem;
+  }
+
+  .results__headline {
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .results__headline strong {
+    color: var(--accent);
+  }
+
+  .stats {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 720px) {
+    .stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .stat {
+    background: var(--bg-alt);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+  }
+
+  .stat dt {
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat dd {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .results__finish {
+    margin: 1.1rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .amounts__title {
+    font-size: 1.3rem;
+    margin: 2.4rem 0 1rem;
+  }
+
+  .chart {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .chart__cell {
+    display: grid;
+    place-items: center;
+    padding: 0.55rem 0.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+
+  .chart__total {
+    margin-top: 1.2rem;
+  }
+
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 3.2rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .steps h3 {
+    margin: 0.2rem 0 0.3rem;
+  }
+
+  .steps p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .tablewrap {
+    overflow-x: auto;
+    margin: 1.4rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.97rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--bg-alt);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .is-classic td {
+    background: var(--accent-soft);
+  }
+
+  .qa {
+    border-top: 1px solid var(--border);
+    padding-top: 1.4rem;
+    margin-top: 1.4rem;
+  }
+
+  .qa h3 {
+    margin-top: 0;
+  }
+
+  .qa p {
+    color: var(--text-muted);
+    margin-bottom: 0;
+  }
+
+  .cta {
+    display: flex;
+    justify-content: center;
+    margin: 1.8rem 0 1rem;
+  }
+
+  @media (max-width: 719px) {
+    .chart {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+</style>

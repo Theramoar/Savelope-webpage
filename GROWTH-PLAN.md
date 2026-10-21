@@ -183,7 +183,21 @@ Hub and spoke, as an Astro content collection so adding posts stays cheap.
       `FAQPage` + `BreadcrumbList`, with `datePublished`/`dateModified`. Linked
       from the header, the footer and the home page, and listed in `llms.txt`.
       Fully static — no JavaScript, so every AI crawler sees the whole thing.
-- [ ] **Days 3–5 · the free tools.** A calculator earns links articles don't.
+- [~] **The free tools.** A calculator earns links articles don't.
+      - [x] `/100-envelope-challenge-calculator/` — done 2026-10-21. Goal,
+        envelope count and pace in; every envelope amount, the spread, the
+        duration and a finish date out. The math lives in `src/lib/envelopes.ts`
+        and is imported by **both** the server render and the browser script, so
+        the page cannot show one set of numbers before hydration and another
+        after. Amounts are computed in whole cents and the rounding remainder
+        goes on the largest envelope, so any goal sums exactly — checked against
+        $2,000/100, $777.77/37 and $10,000/200.
+        The classic challenge renders in full as static HTML, including all 100
+        amounts, so a crawler that runs no JavaScript still gets a complete page;
+        only the finish date is client-side, deliberately, so no deployed page
+        carries a date that went stale.
+      - [ ] A printable chart generator and a "how long to save $X" planner, if
+        Phase 2 shows demand for them.
 - [ ] **Days 6–10 · the listicles.** Honest ones that name MWM's app, Goodbudget
       and Qapital alongside Savelope. A listicle naming only us gets discounted by
       Google and by the models.

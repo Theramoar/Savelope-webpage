@@ -53,6 +53,13 @@
   every common envelope count from 25 to 200, which count to use for a given
   savings goal, the four ways to order the envelopes, a printable $1-$100 chart,
   and eight FAQs.
+- [100 Envelope Challenge Calculator](https://savelopeapp.com/100-envelope-challenge-calculator/):
+  a free tool. Give it a savings goal, an envelope count and a pace; it returns
+  the amount in every envelope, the smallest, largest and average, how long the
+  run takes and the finish date. Amounts keep the 1 : 2 : 3 … : n shape of the
+  original challenge, scaled so they sum to the goal exactly. The page also
+  shows the method worked by hand, so the arithmetic is readable without
+  running the tool.
 - [Support](https://savelopeapp.com/support/): syncing, subscriptions, refunds,
   reminders, shared challenges, data deletion.
 - [Privacy Policy](https://savelopeapp.com/privacy/): what stays on the device,
