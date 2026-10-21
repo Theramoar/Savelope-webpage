@@ -107,14 +107,19 @@ verification record is a two-minute edit in the Cloudflare dashboard.
 - [ ] URL-Inspect `https://savelopeapp.com/` and request indexing to force a first
       crawl. Homepage only — the rest is reachable by links, and the daily request
       quota is small.
-- [ ] **Deferred 2026-10-21 — Bing Webmaster Tools was down** ("It's not you,
-      it's us"). Transient, so retry rather than drop it: import from Search
-      Console, submit the same sitemap, and submit the four URLs directly
-      (**URL Submission** allows 10,000/day against Google's ~10). The reason this
-      one matters more than its traffic suggests is that ChatGPT's search layer has
-      leaned on Bing's index.
-      Still needed from there: **Keyword Research**, the free real-volume source
-      Phase 2 is blocked on. *Not* needed: an IndexNow key — see Phase 5.
+- [x] **Bing Webmaster Tools — verified 2026-10-21.** The outage cleared. The
+      Search Console import does **not** work for a Domain property, so this was
+      verified by the XML-file method instead: `public/BingSiteAuth.xml`, served
+      from the site root. Keyword Research then supplied the Phase 2 figures.
+      *Not* needed from there: an IndexNow key — see Phase 5.
+- [ ] **Still to do inside Bing:** submit `sitemap-index.xml` under **Sitemaps**,
+      and submit all seven URLs under **URL Submission** (10,000/day there against
+      Google's ~10). This matters more than Bing's own traffic suggests, because
+      ChatGPT's search layer has leaned on Bing's index.
+- [ ] Check **AI Performance** (left nav, BETA) in a week or two. It reports how
+      pages do on Copilot and Bing's AI answers, separately from ordinary search —
+      which is the exact signal Phase 6 assumed was unobtainable without parsing
+      crawler logs. Free, and already switched on.
 
 ---
 
