@@ -63,15 +63,58 @@ Checked against the real App Store listing (id `1578843165`):
 
 Everything downstream leaks value until this is done. Start here.
 
-- [ ] Add marketing URL `https://savelopeapp.com/` in App Store Connect
-- [ ] Rename the app to keep the keywords *and* gain a distinctive brand token.
-      Recommended: `Savelope: Saving Money Challenge`. Renaming is free and does
-      not reset reviews.
-- [ ] Repoint the privacy policy to `https://savelopeapp.com/privacy/`
-- [ ] Google Search Console: add `savelopeapp.com` as a **Domain** property (DNS
-      TXT), submit `/sitemap-index.xml`, then URL-Inspect the homepage to force a
-      first crawl
-- [ ] Bing Webmaster Tools: import from Search Console, submit the same sitemap
+### App Store Connect — entered, not yet live
+
+Checked 2026-10-21 against Apple's own public data (`itunes.apple.com/lookup` and the
+rendered store page). All three edits are saved on your side but **none is visible to
+Apple's public endpoints yet**:
+
+| Field | Public value today | Wanted |
+|---|---|---|
+| App name | `Saving Money Challenge` | `Savelope: Saving Money Challenge` |
+| Marketing URL (`sellerUrl`) | *none* | `https://savelopeapp.com/` |
+| Privacy policy | `savelope.flycricket.io/privacy.html` | `https://savelopeapp.com/privacy/` |
+
+Latest public version is 2.1.10, released 2026-10-06 — no submission since.
+
+- [~] Marketing URL `https://savelopeapp.com/` — entered, not public
+- [~] Rename to `Savelope: Saving Money Challenge` — entered, not public.
+      **The name is version-level metadata: it goes live only when a new version is
+      approved.** Leave it staged in the pending version; it ships with your next
+      release. Renaming is still free and does not reset the 442 reviews.
+- [~] Privacy policy → `https://savelopeapp.com/privacy/` — entered, not public
+- [ ] Confirm in App Store Connect whether these sit in a **pending version** or
+      were saved to the live listing. If the latter, they should propagate within a
+      few hours — ask me to re-run the check. If the former, they are gated on the
+      next submission, and only the rename genuinely needs to be.
+
+### Webmaster tools — next up
+
+DNS for `savelopeapp.com` is on **Cloudflare** (`rommy`/`veda` nameservers), with A
+records pointed straight at GitHub Pages and no TXT records present. So the
+verification record is a two-minute edit in the Cloudflare dashboard.
+
+- [x] Google Search Console: `savelopeapp.com` added as a **Domain** property,
+      verified 2026-10-21 via Cloudflare (`google-site-verification=u_NOGZ3p…`,
+      confirmed resolving). **Do not delete that TXT record.**
+- [x] Sitemap submitted 2026-10-21 as the **full URL** —
+      `https://savelopeapp.com/sitemap-index.xml`. A Domain property prefills no
+      domain, so a bare filename is rejected as "Недопустимый адрес".
+      Shows "Не получено" — **expected before the first fetch, not a fault.**
+      Verified independently: robots.txt allows Googlebot with no `Disallow`, and
+      the file returns 200 `application/xml` to a Googlebot UA with no redirects.
+      Do not resubmit; it resets the queue position.
+- [ ] URL-Inspect `https://savelopeapp.com/` and request indexing to force a first
+      crawl. Homepage only — the rest is reachable by links, and the daily request
+      quota is small.
+- [ ] **Deferred 2026-10-21 — Bing Webmaster Tools was down** ("It's not you,
+      it's us"). Transient, so retry rather than drop it: import from Search
+      Console, submit the same sitemap, and submit the four URLs directly
+      (**URL Submission** allows 10,000/day against Google's ~10). The reason this
+      one matters more than its traffic suggests is that ChatGPT's search layer has
+      leaned on Bing's index.
+      Still needed from there: **Keyword Research**, the free real-volume source
+      Phase 2 is blocked on. *Not* needed: an IndexNow key — see Phase 5.
 
 ---
 
@@ -168,15 +211,28 @@ Unlinked mentions count here even though they do nothing for PageRank.
 > The overlap with AI discoverability is ~85%. Only these diverge enough to be
 > worth listing separately.
 
-- [ ] **`Organization` + `WebSite` schema with `sameAs`** pointing at the App Store
-      URL. Highest-value item here, ~20 lines. It machine-asserts that "Savelope"
-      and "Saving Money Challenge" are one entity — finding #1, fixed declaratively
-      instead of hoping a model infers it.
-- [ ] **IndexNow**, wired into `.github/workflows/deploy.yml` so every deploy pings
-      Bing. On a new domain this is days instead of weeks to first crawl.
+- [x] **`Organization` + `WebSite` schema with `sameAs`** — done 2026-10-21 in
+      `src/schema.ts`, emitted on **every** page by `BaseLayout`, since a crawler
+      may fetch one page and no other. `Organization.sameAs` points at the App
+      Store listing, and `SoftwareApplication` gained
+      `alternateName: ["Savelope — Daily Envelope Tracker", "Saving Money
+      Challenge", "Savelope: Saving Money Challenge"]` plus its own `sameAs` and a
+      `publisher` reference to the org. That alias list is the actual fix for
+      finding #1: it names the string someone will really search the App Store for.
+- [x] **IndexNow** — done 2026-10-21 in `.github/workflows/deploy.yml`. **No Bing
+      account was needed:** an IndexNow key is any 8–128 hex characters you
+      generate yourself, proven by hosting it at `/<key>.txt`. Key
+      `4041eca60d21a66592aadd9d08ddab93`, file in `public/`. The step verifies the
+      live key file matches before posting, reads the URL list from the sitemap,
+      and is `continue-on-error` so a ping failure never fails a good deploy.
+      Reaches Bing, Yandex, Seznam and Naver — not Google.
 - [ ] `BreadcrumbList`, `datePublished`, `dateModified` on the Phase 3 pages. Dates
       disproportionately help on AI surfaces, which lean on freshness.
-- [ ] `src/pages/404.astro` — GitHub Pages currently serves its generic one.
+- [x] `src/pages/404.astro` — done 2026-10-21. `noindex, follow`, excluded from
+      the sitemap, links to all four real pages.
+- [ ] **[you]** Tick **Enforce HTTPS** in the repo's Settings → Pages. `http://`
+      currently serves 200 rather than redirecting; the canonical tag covers the
+      SEO risk, so this is hygiene, not urgent.
 
 **Explicitly not doing:** title-tag CTR tuning and SERP-snippet copywriting (models
 don't click), keyword-density tooling, link-building packages, performance work.
@@ -185,7 +241,11 @@ don't click), keyword-density tooling, link-building packages, performance work.
 
 ## Phase 6 — measurement · **[agent]** + **[you]** · ~20 min
 
-- [ ] Cloudflare free tier in front of GitHub Pages. **Pages logs nothing**, so
+- [ ] Cloudflare free tier in front of GitHub Pages. DNS is **already on
+      Cloudflare**, but the records are DNS-only — responses still carry
+      `server: GitHub.com` and no `cf-ray`, so nothing is proxied and nothing is
+      logged. This is one toggle per record, not a migration.
+      **Pages logs nothing**, so
       right now there is no way to tell whether `OAI-SearchBot` or
       `Claude-SearchBot` has ever fetched us — the one signal that says this worked.
 - [ ] Weekly: Search Console impressions, and crawler hits by user agent

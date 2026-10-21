@@ -2,18 +2,22 @@
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { siteSchemas } from '../schema';
 
 interface Props {
   title: string;
   description: string;
   /** schema.org objects emitted as JSON-LD, for search and AI crawlers. */
   jsonLd?: Record<string, unknown>[];
+  /** Keep this page out of the index. Only the 404 wants this. */
+  noindex?: boolean;
 }
 
-const { title, description, jsonLd = [] } = Astro.props;
+const { title, description, jsonLd = [], noindex = false } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(`${base}/images/og-icon.png`, Astro.site).href;
+const schemas = [...siteSchemas(Astro.site), ...jsonLd];
 ---
 
 <!doctype html>
@@ -23,6 +27,7 @@ const ogImage = new URL(`${base}/images/og-icon.png`, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" href={`${base}/images/icons/icon-default.png`} />
     <link rel="apple-touch-icon" href={`${base}/images/icons/icon-default.png`} />
@@ -39,7 +44,7 @@ const ogImage = new URL(`${base}/images/og-icon.png`, Astro.site).href;
     <meta name="twitter:image" content={ogImage} />
 
     {
-      jsonLd.map((schema) => (
+      schemas.map((schema) => (
         <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
       ))
     }

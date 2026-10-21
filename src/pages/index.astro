@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AppStoreButton from '../components/AppStoreButton.astro';
 import Phone from '../components/Phone.astro';
 import { SITE } from '../config';
+import { schemaIds } from '../schema';
 
 import gridShot from '../assets/screenshots/05-grid.png';
 import planShot from '../assets/screenshots/02-plan.png';
@@ -95,6 +96,7 @@ const faqs = [
 ];
 
 const homeUrl = new URL('/', Astro.site).href;
+const ids = schemaIds(Astro.site);
 const abs = (path) => new URL(path, Astro.site).href;
 
 /**
@@ -107,8 +109,17 @@ const appSchema = {
   '@type': 'SoftwareApplication',
   '@id': `${homeUrl}#app`,
   name: SITE.name,
-  alternateName: `${SITE.name} — ${SITE.tagline}`,
+  // The store name is here as an alias on purpose: it is the string someone will
+  // actually search the App Store for, and nothing else on the page says that
+  // "Saving Money Challenge" and "Savelope" are the same app.
+  alternateName: [
+    `${SITE.name} — ${SITE.tagline}`,
+    'Saving Money Challenge',
+    `${SITE.name}: Saving Money Challenge`,
+  ],
   url: homeUrl,
+  sameAs: [SITE.appStoreUrl],
+  publisher: { '@id': ids.org },
   description:
     'An iOS savings-challenge tracker built around the 100 envelope challenge. Each envelope holds a different amount between $1 and $100; open one a day, set that amount aside, and the 100 envelopes add up to $5,050. Savelope never connects to a bank and never moves money — it tracks what you have set aside yourself. Custom goals, shared challenges and daily reminders are free.',
   applicationCategory: 'FinanceApplication',

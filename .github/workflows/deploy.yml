@@ -16,6 +16,13 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  # IndexNow key. Not a secret by design: the protocol requires the same value to
+  # be readable at https://savelopeapp.com/<key>.txt, which proves we control the
+  # domain. It must stay in step with the file of that name in public/.
+  INDEXNOW_KEY: 4041eca60d21a66592aadd9d08ddab93
+  SITE_HOST: savelopeapp.com
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,3 +45,41 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # Tell the IndexNow engines (Bing, Yandex, Seznam, Naver) that pages changed,
+      # rather than waiting for them to re-crawl. Google does not participate.
+      # Never fail the run over this: the deploy itself has already succeeded.
+      - name: Ping IndexNow
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          # Give the Pages CDN a moment to serve the new build.
+          sleep 30
+
+          live_key=$(curl -sfL "https://${SITE_HOST}/${INDEXNOW_KEY}.txt" || true)
+          if [ "$live_key" != "$INDEXNOW_KEY" ]; then
+            echo "::warning::Key file at /${INDEXNOW_KEY}.txt does not match INDEXNOW_KEY; skipping."
+            exit 0
+          fi
+
+          urls=$(curl -sfL "https://${SITE_HOST}/sitemap-0.xml" \
+            | grep -oE '<loc>[^<]+</loc>' \
+            | sed -E 's#</?loc>##g' \
+            | jq -R . | jq -sc .)
+          if [ -z "$urls" ] || [ "$urls" = "[]" ]; then
+            echo "::warning::No URLs found in sitemap; skipping."
+            exit 0
+          fi
+
+          payload=$(jq -nc \
+            --arg host "$SITE_HOST" \
+            --arg key "$INDEXNOW_KEY" \
+            --arg keyLocation "https://${SITE_HOST}/${INDEXNOW_KEY}.txt" \
+            --argjson urlList "$urls" \
+            '{host:$host,key:$key,keyLocation:$keyLocation,urlList:$urlList}')
+
+          echo "Submitting $(echo "$urls" | jq 'length') URLs to IndexNow."
+          curl -sS -X POST https://api.indexnow.org/indexnow \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d "$payload" \
+            -w '\nIndexNow responded %{http_code}\n'

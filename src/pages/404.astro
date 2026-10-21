@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const elsewhere = [
+  { href: `${base}/`, label: 'Home', body: 'What Savelope is and how the challenge works.' },
+  { href: `${base}/support`, label: 'Support', body: 'Answers to the questions people ask most.' },
+  { href: `${base}/privacy`, label: 'Privacy', body: 'What the app stores, and what it never asks for.' },
+  { href: `${base}/terms`, label: 'Terms', body: 'Licence, subscriptions and cancellation.' },
+];
+---
+
+<BaseLayout
+  title="Page not found — Savelope"
+  description="That page does not exist. Links to the rest of the Savelope site."
+  noindex
+>
+  <section class="section">
+    <div class="wrap prose center">
+      <p class="eyebrow">404</p>
+      <h1>That envelope is empty</h1>
+      <p class="lede">
+        The page you were after does not exist. It may have moved, or the link may have
+        been mistyped.
+      </p>
+      <p>
+        <a class="btn btn--primary" href={`${base}/`}>Back to the home page</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="grid grid--2">
+        {
+          elsewhere.map((l) => (
+            <a class="card nf" href={l.href}>
+              <h2>{l.label}</h2>
+              <p>{l.body}</p>
+            </a>
+          ))
+        }
+      </div>
+      <p class="center nf__store">
+        Or <a href={SITE.appStoreUrl} rel="noopener">get {SITE.name} on the App Store</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    display: block;
+    color: inherit;
+  }
+
+  .nf:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+  }
+
+  .nf h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+
+  .nf p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .nf__store {
+    margin-top: 2rem;
+    color: var(--text-muted);
+  }
+</style>
