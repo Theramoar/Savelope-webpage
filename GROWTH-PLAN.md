@@ -445,7 +445,15 @@ don't click), keyword-density tooling, link-building packages, performance work.
 
 ## Phase 7 — compound it · later
 
-- [ ] Reusable skill holding where assets and copy live, once this works for one app
+- [x] **Reusable skill — written 2026-10-21**, ahead of the "once this works"
+      gate, because the workflow was fresh and the gotchas were still in memory.
+      Lives at `~/.claude/skills/app-marketing-site/`, so it is available in any
+      project on this machine. Covers the phase order, the owner split, the
+      checklist it generates first, the technical patterns (schema, IndexNow,
+      static-first tools, print CSS, shared data modules) and the traps — the
+      store rename being version-level, Bing not importing Domain properties,
+      keyword nulls being indistinguishable from outages, and the JSX whitespace
+      bug. Judge it on the next app's site; revise it from what breaks there.
 - [ ] Localization. English-only today; each added language is another localized
       marketing URL and another backlink. The `vibe-aso` skill covers this pipeline
       — but not until the English site is pulling traffic.
