@@ -112,10 +112,19 @@ verification record is a two-minute edit in the Cloudflare dashboard.
       verified by the XML-file method instead: `public/BingSiteAuth.xml`, served
       from the site root. Keyword Research then supplied the Phase 2 figures.
       *Not* needed from there: an IndexNow key — see Phase 5.
-- [ ] **Still to do inside Bing:** submit `sitemap-index.xml` under **Sitemaps**,
-      and submit all seven URLs under **URL Submission** (10,000/day there against
-      Google's ~10). This matters more than Bing's own traffic suggests, because
-      ChatGPT's search layer has leaned on Bing's index.
+- [x] **Sitemap submitted to Bing 2026-10-21** — `sitemap-index.xml`, status
+      Success, crawled the same day, no errors or warnings.
+- [x] **Six URLs submitted** under URL Submission at 18:54: home, hub, calculator,
+      support, privacy, terms.
+- [ ] **Submit `/savings-challenge-printables/` too.** It did not exist at 18:54,
+      so it is the one page missing from that list. It *was* pushed to Bing by
+      IndexNow when it deployed — a different surface from the manual list — but
+      submitting it costs nothing against a 10,000/day quota.
+- [ ] **Watch "Total URLs discovered" on the Sitemaps page.** It currently reads
+      **1**, not 7. That is Bing counting the one child sitemap inside
+      `sitemap-index.xml`; the seven page URLs live in `sitemap-0.xml`, which it
+      has not walked through to yet. If it still reads 1 in a day or two, submit
+      `https://savelopeapp.com/sitemap-0.xml` directly alongside the index.
 - [ ] Check **AI Performance** (left nav, BETA) in a week or two. It reports how
       pages do on Copilot and Bing's AI answers, separately from ordinary search —
       which is the exact signal Phase 6 assumed was unobtainable without parsing
