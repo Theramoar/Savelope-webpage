@@ -307,13 +307,22 @@ Hub and spoke, as an Astro content collection so adding posts stays cheap.
         amounts, so a crawler that runs no JavaScript still gets a complete page;
         only the finish date is client-side, deliberately, so no deployed page
         carries a date that went stale.
-      - [ ] **A printable charts page — now the top content priority.** Phase 2
+      - [x] **`/savings-challenge-printables/` — done 2026-10-21.** Phase 2
         showed the demand: `saving challenge printable` (307) and
         `savings challenge printable free` (278) total 585 impressions, ahead of
         `100 envelope challenge` (358). Printable charts for the classic 100, the
         50, the 52-week and a custom count, each printing on its own page. The
         hub already proves the mechanism — its chart prints clean, with
         everything else dropped by a `@media print` rule.
+        Built with four charts: 100 envelope ($5,050), 50 envelope ($1,275),
+        52 week ($1,378) and 26 week ($351), every total computed from
+        `triangular()` rather than typed. Each chart has its own print button
+        that prints that chart alone; printing the page gives all four, one per
+        sheet. The buttons are progressive enhancement — without JavaScript the
+        charts are all there and browser print still works. `Article` +
+        `ItemList` + `FAQPage` + `BreadcrumbList`. "Free, no email, no download"
+        is said plainly, because `savings challenge printable free` was 278 of
+        the 585.
       - [ ] A "how long to save $X" planner. Mostly covered by the calculator
         already; revisit only if a spot-check shows separate demand.
 - [ ] **The listicles — demoted 2026-10-21, pending a spot-check.** Honest ones

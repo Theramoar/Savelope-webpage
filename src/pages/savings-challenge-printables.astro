@@ -1,0 +1,512 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AppStoreButton from '../components/AppStoreButton.astro';
+import { SITE } from '../config';
+import { schemaIds } from '../schema';
+import { triangular, money } from '../lib/envelopes';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const ids = schemaIds(Astro.site);
+const hubUrl = new URL(`${base}/100-envelope-challenge/`, Astro.site).href;
+const calcUrl = new URL(`${base}/100-envelope-challenge-calculator/`, Astro.site).href;
+const pageUrl = new URL(`${base}/savings-challenge-printables/`, Astro.site).href;
+
+const published = '2026-10-21';
+const modified = '2026-10-21';
+
+/**
+ * Each sheet is the same idea at a different length: amounts $1 up to $n, which
+ * add up to n(n+1)/2. Totals are computed, never typed, so a chart and the total
+ * printed under it cannot disagree.
+ */
+const sheets = [
+  {
+    id: 'envelope-100',
+    title: 'The 100 Envelope Challenge',
+    count: 100,
+    cols: 10,
+    unit: 'envelope',
+    blurb: 'The classic. Draw one envelope a day and set aside that many dollars.',
+  },
+  {
+    id: 'envelope-50',
+    title: 'The 50 Envelope Challenge',
+    count: 50,
+    cols: 10,
+    unit: 'envelope',
+    blurb: 'Half the length, half the ceiling. Nothing above $50 on any day.',
+  },
+  {
+    id: 'week-52',
+    title: 'The 52 Week Savings Challenge',
+    count: 52,
+    cols: 13,
+    unit: 'week',
+    blurb: 'One a week for a year. Week 1 is $1, week 52 is $52.',
+  },
+  {
+    id: 'week-26',
+    title: 'The 26 Week Challenge',
+    count: 26,
+    cols: 13,
+    unit: 'week',
+    blurb: 'Every other week for a year, or weekly for six months.',
+  },
+].map((s) => ({
+  ...s,
+  totalCents: triangular(s.count) * 100,
+  amounts: Array.from({ length: s.count }, (_, i) => (i + 1) * 100),
+}));
+
+const faqs = [
+  {
+    q: 'Are these printables really free?',
+    a: 'Yes. No email address, no account, no download. Press print and the chart comes out — the page is built so that only the chart prints, without the navigation or the surrounding article.',
+  },
+  {
+    q: 'How do I print just one chart?',
+    a: 'Each chart has its own print button, which prints that chart alone. If you print the page from the browser menu instead, you get all four charts, one per sheet of paper.',
+  },
+  {
+    q: 'What paper size do they fit?',
+    a: 'A4 and US Letter both work. Each chart is laid out to fit a single portrait page with room to tick boxes off by hand.',
+  },
+  {
+    q: 'How much does each chart save?',
+    a: sheets
+      .map((s) => `${s.title.replace('The ', '')}: ${money(s.totalCents)}`)
+      .join('. ') + '. Each total is the sum of every whole number from 1 up to the number of envelopes or weeks.',
+  },
+  {
+    q: 'Can I get a chart for a different savings goal?',
+    a: 'Yes — the calculator works out the amounts for any goal and any number of envelopes, and you can print that page the same way. These four are simply the common ones.',
+  },
+  {
+    q: 'Do I need paper at all?',
+    a: 'No. Paper suits people who like crossing things off; an app suits people who would rather be reminded. Savelope does the second, and never connects to a bank.',
+  },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: 'Free savings challenge printables',
+  description:
+    'Free printable savings challenge charts: the 100 envelope challenge, the 50 envelope challenge, the 52 week challenge and the 26 week challenge. No email, no download.',
+  mainEntityOfPage: pageUrl,
+  datePublished: published,
+  dateModified: modified,
+  inLanguage: 'en',
+  author: { '@id': ids.org },
+  publisher: { '@id': ids.org },
+  isPartOf: { '@id': `${hubUrl}#article` },
+};
+
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': `${pageUrl}#charts`,
+  name: 'Free savings challenge printable charts',
+  numberOfItems: sheets.length,
+  itemListElement: sheets.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: s.title,
+    description: `${s.count} ${s.unit}s, $1 to $${s.count}, totalling ${money(s.totalCents)}. ${s.blurb}`,
+    url: `${pageUrl}#${s.id}`,
+  })),
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  '@id': `${pageUrl}#breadcrumbs`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: SITE.name, item: ids.home },
+    { '@type': 'ListItem', position: 2, name: 'The 100 Envelope Challenge', item: hubUrl },
+    { '@type': 'ListItem', position: 3, name: 'Printables', item: pageUrl },
+  ],
+};
+---
+
+<BaseLayout
+  title="Free Savings Challenge Printables — 100 Envelope, 52 Week and more"
+  description="Four free printable savings challenge charts: 100 envelope, 50 envelope, 52 week and 26 week. No email and no download — each chart prints on its own page."
+  jsonLd={[articleSchema, listSchema, faqSchema, breadcrumbSchema]}
+>
+  <nav class="crumbs wrap" aria-label="Breadcrumb">
+    <a href={`${base}/`}>{SITE.name}</a>
+    <span aria-hidden="true">→</span>
+    <a href={`${base}/100-envelope-challenge/`}>The 100 Envelope Challenge</a>
+    <span aria-hidden="true">→</span>
+    <span aria-current="page">Printables</span>
+  </nav>
+
+  <section class="section hero">
+    <div class="wrap prose">
+      <p class="eyebrow">Free printables</p>
+      <h1>Savings challenge printables</h1>
+      <p class="lede">
+        Four charts to print and tick off: the 100 envelope challenge, the 50 envelope
+        challenge, the 52 week challenge and the 26 week challenge.{' '}
+        <strong>No email address, no account, no download.</strong>
+      </p>
+      <p>
+        Press the print button under any chart and that chart prints on its own — the
+        navigation, the explanations and the other charts all drop away. Print the whole
+        page instead and you get all four, one per sheet.
+      </p>
+      <nav class="jump" aria-label="Charts on this page">
+        {sheets.map((s) => <a href={`#${s.id}`}>{s.title.replace('The ', '')}</a>)}
+      </nav>
+    </div>
+  </section>
+
+  {
+    sheets.map((s) => (
+      <section class="section sheetsec" id={s.id}>
+        <div class="wrap">
+          <div class="sheet" data-sheet={s.id}>
+            <header class="sheet__head">
+              <h2>{s.title}</h2>
+              <p class="sheet__meta">
+                {s.count} {s.unit}s · $1 to ${s.count} · totals{' '}
+                <strong>{money(s.totalCents)}</strong>
+              </p>
+              <p class="sheet__blurb">{s.blurb}</p>
+            </header>
+
+            <div class="grid-chart" style={`--cols:${s.cols}`}>
+              {
+                s.amounts.map((c, i) => (
+                  <span class="cell">
+                    <span class="cell__n">{s.unit === 'week' ? `W${i + 1}` : i + 1}</span>
+                    <span class="cell__amt">{money(c)}</span>
+                  </span>
+                ))
+              }
+            </div>
+
+            <p class="sheet__foot">
+              {s.title} · {money(s.totalCents)} in total · savelopeapp.com
+            </p>
+          </div>
+
+          <p class="sheet__actions">
+            <button type="button" class="btn btn--ghost printbtn" data-print={s.id}>
+              Print this chart
+            </button>
+          </p>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section section--alt">
+    <div class="wrap prose">
+      <h2 id="how">How to use them</h2>
+      <p>
+        Every chart works the same way. Each box holds a different whole-dollar amount, and
+        you cross one off each time you set that much aside. Pick the box at random if you
+        want the challenge to stay interesting, or work along the rows if you would rather
+        know what is coming.
+      </p>
+      <p>
+        The totals are not arbitrary. A chart numbered 1 to <em>n</em> adds up to{' '}
+        <em>n</em> × (<em>n</em> + 1) ÷ 2, which is why a hundred envelopes come to
+        {' '}{money(sheets[0].totalCents)} and fifty-two weeks come to{' '}
+        {money(sheets[2].totalCents)}.{' '}
+        <a href={`${base}/100-envelope-challenge/`}>The full guide</a> works through the
+        arithmetic and every variant.
+      </p>
+      <p>
+        Want a chart for a goal that is not on this page — $2,000, or $750, or anything
+        else? The{' '}
+        <a href={`${base}/100-envelope-challenge-calculator/`}>challenge calculator</a>{' '}
+        scales the amounts to any total and any number of envelopes, and prints the same way.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap prose">
+      <h2 id="faq">Questions people ask</h2>
+      {
+        faqs.map((f) => (
+          <div class="qa">
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose center">
+      <h2>If paper is not your thing</h2>
+      <p class="lede">
+        {SITE.name} runs the same challenges on your phone — it picks the envelope, keeps
+        the total and reminds you once a day. It never connects to a bank and never moves
+        money.
+      </p>
+      <p class="cta"><AppStoreButton /></p>
+      <p class="prose--meta">
+        Rated {SITE.rating} from {SITE.ratingCount} ratings · Free, with optional Premium
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Printing one chart: mark the page, let CSS hide every other sheet, print,
+  // then put it back. Without JavaScript the buttons are simply absent and
+  // browser print gives all four charts, one per page.
+  const body = document.body;
+
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('.printbtn')) {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.print;
+      if (!id) return;
+      body.setAttribute('data-print-only', id);
+      window.print();
+    });
+  }
+
+  const clear = () => body.removeAttribute('data-print-only');
+  window.addEventListener('afterprint', clear);
+  // Safari does not always fire afterprint; clear on focus as a backstop.
+  window.addEventListener('focus', clear);
+</script>
+
+<style>
+  .crumbs {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding-top: 1.5rem;
+  }
+
+  .crumbs span[aria-current] {
+    color: var(--text);
+  }
+
+  .hero {
+    padding-bottom: calc(var(--section-y) * 0.45);
+  }
+
+  .hero .lede {
+    font-size: 1.25rem;
+    color: var(--text);
+  }
+
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+  }
+
+  .jump a {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.4rem 0.95rem;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+
+  .jump a:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .sheetsec {
+    padding-block: calc(var(--section-y) * 0.45);
+  }
+
+  .sheet {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.8rem;
+    box-shadow: var(--shadow);
+  }
+
+  .sheet__head h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.4rem;
+  }
+
+  .sheet__meta {
+    margin: 0 0 0.3rem;
+    color: var(--text-muted);
+    font-size: 0.97rem;
+  }
+
+  .sheet__meta strong {
+    color: var(--accent);
+  }
+
+  .sheet__blurb {
+    margin: 0 0 1.4rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .grid-chart {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+    padding: 0.5rem 0.15rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+  }
+
+  .cell__n {
+    font-size: 0.64rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .cell__amt {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sheet__foot {
+    margin: 1.4rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .sheet__actions {
+    margin: 1.1rem 0 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .qa {
+    border-top: 1px solid var(--border);
+    padding-top: 1.4rem;
+    margin-top: 1.4rem;
+  }
+
+  .qa h3 {
+    margin-top: 0;
+  }
+
+  .qa p {
+    color: var(--text-muted);
+    margin-bottom: 0;
+  }
+
+  .cta {
+    display: flex;
+    justify-content: center;
+    margin: 1.8rem 0 1rem;
+  }
+
+  @media (max-width: 719px) {
+    .grid-chart {
+      grid-template-columns: repeat(min(var(--cols), 5), minmax(0, 1fr));
+    }
+
+    .sheet {
+      padding: 1.1rem;
+    }
+  }
+
+  /* Printing: the charts and nothing else, one per page. */
+  @media print {
+    :global(.hdr),
+    :global(.ftr),
+    .crumbs,
+    .sheet__actions {
+      display: none !important;
+    }
+
+    /* Anything that is not a chart goes, headings included. Listing sections
+       individually left the FAQ's own heading behind on the printed sheet. */
+    .section:not(.sheetsec) {
+      display: none !important;
+    }
+
+    .sheetsec {
+      padding: 0 !important;
+      break-after: page;
+    }
+
+    .sheetsec:last-of-type {
+      break-after: auto;
+    }
+
+    .sheet {
+      border: 0;
+      box-shadow: none;
+      padding: 0;
+      background: #fff;
+    }
+
+    .sheet__head h2,
+    .cell__amt {
+      color: #000;
+    }
+
+    .sheet__meta,
+    .sheet__blurb,
+    .cell__n,
+    .sheet__foot {
+      color: #333;
+    }
+
+    .cell {
+      border-color: #999;
+      padding: 0.7rem 0.15rem;
+    }
+
+    /* One chart at a time, when a print button asked for it. */
+    :global(body[data-print-only]) .sheetsec {
+      display: none !important;
+    }
+  }
+</style>
+
+<style is:global>
+  @media print {
+    body[data-print-only='envelope-100'] #envelope-100,
+    body[data-print-only='envelope-50'] #envelope-50,
+    body[data-print-only='week-52'] #week-52,
+    body[data-print-only='week-26'] #week-26 {
+      display: block !important;
+      break-after: auto;
+    }
+  }
+</style>

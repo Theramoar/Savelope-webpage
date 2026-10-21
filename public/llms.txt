@@ -60,6 +60,12 @@
   original challenge, scaled so they sum to the goal exactly. The page also
   shows the method worked by hand, so the arithmetic is readable without
   running the tool.
+- [Savings Challenge Printables](https://savelopeapp.com/savings-challenge-printables/):
+  four free printable charts - the 100 envelope challenge ($5,050), the 50
+  envelope challenge ($1,275), the 52 week savings challenge ($1,378) and the
+  26 week challenge ($351). No email address, account or download required.
+  Each chart prints on its own page; printing the whole page gives all four,
+  one per sheet.
 - [Support](https://savelopeapp.com/support/): syncing, subscriptions, refunds,
   reminders, shared challenges, data deletion.
 - [Privacy Policy](https://savelopeapp.com/privacy/): what stays on the device,
