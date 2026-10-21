@@ -180,11 +180,26 @@ Re-run over 21 Oct 2025 – 20 Oct 2026:
 | `100 envelope challenge` | **703** (US 512 · UK 33 · CA 27) | 358 | 345 |
 | `saving challenge printable` | **570** (US 439 · UK 10 · CA 8) | 307 | 263 |
 
-**Everything else tested is below Bing's reporting threshold**: `100 envelope
-challenge chart`, `50 envelope challenge`, `52 week savings challenge`,
+**Everything else tested returned "not enough data"**: `100 envelope challenge
+chart`, `50 envelope challenge`, `52 week savings challenge`,
 `100 envelope challenge calculator`, `Qapital alternatives`,
 `Goodbudget alternatives` — on top of `savings challenge app` and
 `envelope savings challenge` from the first pass.
+
+> **⚠ The null results need re-checking before they are trusted.**
+> Later the same day, driving the tool directly, **every** lookup returned
+> "Bing doesn't have enough data to show trend here" — including
+> `100 envelope challenge`, which had returned 703 an hour earlier. The page
+> also showed "Invalid request" and "This might be a momentary issue, please
+> try again or check back later", so the tool was erroring rather than
+> reporting absence.
+>
+> That means a "not enough data" response from this tool is **not** reliable
+> evidence of no demand. The two positive figures stand — a number returned is
+> a number measured — but every null above was collected in the same session
+> and could be the same fault. Re-run each on a different day before treating
+> any of them as settled. The decisions below were taken on this evidence and
+> are provisional until that re-check happens.
 
 **Correction to the seasonality guess.** The earlier note assumed a Jul–Oct
 window caught an off-season trough before a January spike. The twelve-month data
@@ -316,6 +331,10 @@ Hub and spoke, as an Astro content collection so adding posts stays cheap.
       below Bing's reporting threshold. The variants are already covered as
       sections of the hub, which is where they belong when nobody searches for
       them separately. Reinstate only if another volume source contradicts this.
+      **Provisional:** this cut rests on null results the tool may have returned
+      in error — see the warning in Phase 2. Re-check before treating it as
+      final. Nothing is lost by the delay: the printables page comes first
+      either way.
 
 ### Implementation constraints
 
