@@ -199,6 +199,10 @@ chart`, `50 envelope challenge`, `52 week savings challenge`,
 > try again or check back later", so the tool was erroring rather than
 > reporting absence.
 >
+> Later still, the whole of Bing Webmaster Tools returned its outage page
+> again ("It's not you, it's us"), which is almost certainly what the keyword
+> errors were the leading edge of.
+>
 > That means a "not enough data" response from this tool is **not** reliable
 > evidence of no demand. The two positive figures stand — a number returned is
 > a number measured — but every null above was collected in the same session
