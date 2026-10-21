@@ -171,16 +171,57 @@ by a guessed share would be exactly the invented-volume problem this phase
 exists to avoid. US share is ~72% on both measurable head terms, which supports
 leaving localization in Phase 7.
 
+### Twelve-month figures and the null results, 2026-10-21
+
+Re-run over 21 Oct 2025 – 20 Oct 2026:
+
+| Term | 12 months | 3 months | Earlier 9 months |
+|---|---|---|---|
+| `100 envelope challenge` | **703** (US 512 · UK 33 · CA 27) | 358 | 345 |
+| `saving challenge printable` | **570** (US 439 · UK 10 · CA 8) | 307 | 263 |
+
+**Everything else tested is below Bing's reporting threshold**: `100 envelope
+challenge chart`, `50 envelope challenge`, `52 week savings challenge`,
+`100 envelope challenge calculator`, `Qapital alternatives`,
+`Goodbudget alternatives` — on top of `savings challenge app` and
+`envelope savings challenge` from the first pass.
+
+**Correction to the seasonality guess.** The earlier note assumed a Jul–Oct
+window caught an off-season trough before a January spike. The twelve-month data
+says otherwise: the most recent quarter carries about half of each term's annual
+total (119/month against 38/month earlier for the challenge term, 102 against 29
+for printables). Both terms roughly tripled, and the twelve-month window includes
+January 2026 with no visible spike. This is a rising trend, not a seasonal dip —
+though a platform-wide change in Bing's traffic or reporting would look identical
+from here, so do not treat the trebling as demand growth alone.
+
+### What this means: build fewer pages, not eight
+
+Phase 3 assumed Phase 2 would rank twenty-odd candidates so the best eight could
+be picked. It has instead found a **two-term niche**: the challenge itself and
+printables, plus the paraphrase cluster around them (`savings challenges` 371,
+`money saving challenge` 263, `saving challenge` 166).
+
+There is no measurable demand for the variant spokes, the alternatives pages or
+the app listicles. Building eight pages against this evidence would manufacture
+exactly the doorway pages Deviation 1 exists to prevent, and would dilute two
+hub pages that are already live and good. **Three or four strong pages is what
+the data supports.** The effort freed up belongs in Phase 4, which was always
+the part that decides whether a model names us.
+
+Note for honesty: `100 envelope challenge calculator` is below threshold too, so
+the calculator page was not built on search demand. That was never its argument —
+the plan's case was that a tool earns links an article does not. It stands or
+falls on that, and should be judged on referring domains, not impressions.
+
 ### Still to pull
 
-- [ ] The **Question keywords** tab — the highest-value one left. Question
-      phrasings are what an assistant matches against, and they feed FAQ blocks
-      directly.
-- [ ] **Download all** on the related-keywords list, rather than the 5 rows shown.
-- [ ] Spot-checks not yet run: `best savings challenge apps`,
-      `100 envelope challenge calculator`, `100 envelope challenge chart`,
-      `50 envelope challenge`, `52 week savings challenge`,
-      `Qapital alternatives`, `Goodbudget alternatives`.
+- [ ] The **Question keywords** tab for both head terms — the highest-value one
+      left. Question phrasings are what an assistant matches against, and they
+      feed FAQ blocks directly.
+- [ ] **Download all** on the related-keywords lists, rather than the 5 rows shown.
+- [ ] `best savings challenge apps` — still unchecked. The last term that could
+      revive the listicle tranche.
 
 ### Candidates
 
@@ -213,6 +254,12 @@ leaving localization in Phase 7.
 > helpful-content systems demote them and LLM retrieval ignores them; worse, a page
 > that restates the hub with one keyword swapped dilutes the hub that was working.
 > Let Phase 2's volume data pick the eight.
+>
+> **Revised 2026-10-21, now that the data is in: three or four, not eight.**
+> Phase 2 found measurable demand for two terms and nothing else. Eight pages
+> against that evidence would be the doorway-page failure this deviation was
+> written to avoid — just arrived at from the other direction. The gate did its
+> job; the answer it gave was "fewer".
 
 Hub and spoke, as an Astro content collection so adding posts stays cheap.
 
@@ -263,7 +310,12 @@ Hub and spoke, as an Astro content collection so adding posts stays cheap.
       `best savings challenge apps` has been checked directly — if it is also
       flat, the whole listicle tranche is a worse bet than more challenge-and-
       printable pages, and the eight slots should go elsewhere.
-- [ ] **Days 11–14 · alternatives pages and the variant spokes.**
+- [ ] **Alternatives pages and the variant spokes — cut 2026-10-21.**
+      `Qapital alternatives`, `Goodbudget alternatives`, `50 envelope challenge`,
+      `52 week savings challenge` and `100 envelope challenge chart` all came back
+      below Bing's reporting threshold. The variants are already covered as
+      sections of the hub, which is where they belong when nobody searches for
+      them separately. Reinstate only if another volume source contradicts this.
 
 ### Implementation constraints
 
