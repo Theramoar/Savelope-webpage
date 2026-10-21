@@ -130,8 +130,57 @@ volumes**, and Phase 1 already has you creating that account. Google Keyword Pla
 is free with an Ads account. DataForSEO is pay-as-you-go if you'd rather I query it
 directly.
 
-- [ ] Pull volumes for the candidates below
+- [~] Pull volumes for the candidates below
 - [ ] Cut everything at zero; keep the best 8 (see Deviation in Phase 3)
+
+### First data, 2026-10-21 — Bing Webmaster Tools
+
+Verified via the XML-file method (`public/BingSiteAuth.xml`); the Search Console
+import does not work for a Domain property. Figures are **Bing impressions over
+three months** (21 Jul – 18 Oct 2026, all countries), not monthly search volume.
+
+| Term | Impressions | Note |
+|---|---|---|
+| `savings challenges` (plural) | **371** | highest single term found |
+| `100 envelope challenge` | **358** | US 256 · UK 17 · CA 17 · AU 11 |
+| `saving challenge printable` | **307** | |
+| `savings challenge printable free` | **278** | |
+| `money saving challenge` | **263** | US 191 · IN 14 · UK 10 · CA 7 |
+| `saving challenge` | 166 | |
+| `savings challenge` | 46 | |
+| `savings challenge app` | *no data* | below Bing's reporting threshold |
+| `envelope savings challenge` | *no data* | below Bing's reporting threshold |
+
+**Three findings that change the plan.**
+
+1. **Printables are the biggest cluster found so far.** `saving challenge
+   printable` and `savings challenge printable free` together total 585, ahead of
+   `100 envelope challenge` at 358. The printable chart generator was parked in
+   Phase 3 as "if Phase 2 shows demand". It has. It moves to the front.
+2. **App-intent queries are too thin to measure.** Both `savings challenge app`
+   and `envelope savings challenge` returned no data at all. That weakens the
+   case for the listicles, which were pencilled in for Days 6–10 — people search
+   for the *challenge* and for *printables*, not for apps to run it with.
+3. **The plural outranks the singular 8 : 1** (371 vs 46). Worth preferring
+   "savings challenges" in headings and titles where it reads naturally.
+
+**Reading these numbers honestly.** Bing carries a small share of search, so
+these are a relative ranking, not a forecast. The order between terms transfers
+to Google reasonably well; the absolute figures do not, and multiplying them up
+by a guessed share would be exactly the invented-volume problem this phase
+exists to avoid. US share is ~72% on both measurable head terms, which supports
+leaving localization in Phase 7.
+
+### Still to pull
+
+- [ ] The **Question keywords** tab — the highest-value one left. Question
+      phrasings are what an assistant matches against, and they feed FAQ blocks
+      directly.
+- [ ] **Download all** on the related-keywords list, rather than the 5 rows shown.
+- [ ] Spot-checks not yet run: `best savings challenge apps`,
+      `100 envelope challenge calculator`, `100 envelope challenge chart`,
+      `50 envelope challenge`, `52 week savings challenge`,
+      `Qapital alternatives`, `Goodbudget alternatives`.
 
 ### Candidates
 
@@ -196,11 +245,24 @@ Hub and spoke, as an Astro content collection so adding posts stays cheap.
         amounts, so a crawler that runs no JavaScript still gets a complete page;
         only the finish date is client-side, deliberately, so no deployed page
         carries a date that went stale.
-      - [ ] A printable chart generator and a "how long to save $X" planner, if
-        Phase 2 shows demand for them.
-- [ ] **Days 6–10 · the listicles.** Honest ones that name MWM's app, Goodbudget
-      and Qapital alongside Savelope. A listicle naming only us gets discounted by
-      Google and by the models.
+      - [ ] **A printable charts page — now the top content priority.** Phase 2
+        showed the demand: `saving challenge printable` (307) and
+        `savings challenge printable free` (278) total 585 impressions, ahead of
+        `100 envelope challenge` (358). Printable charts for the classic 100, the
+        50, the 52-week and a custom count, each printing on its own page. The
+        hub already proves the mechanism — its chart prints clean, with
+        everything else dropped by a `@media print` rule.
+      - [ ] A "how long to save $X" planner. Mostly covered by the calculator
+        already; revisit only if a spot-check shows separate demand.
+- [ ] **The listicles — demoted 2026-10-21, pending a spot-check.** Honest ones
+      that name MWM's app, Goodbudget and Qapital alongside Savelope. A listicle
+      naming only us gets discounted by Google and by the models.
+      **But `savings challenge app` and `envelope savings challenge` both came
+      back below Bing's reporting threshold.** People search for the challenge
+      and for printables, not for apps to run it with. Do not build these until
+      `best savings challenge apps` has been checked directly — if it is also
+      flat, the whole listicle tranche is a worse bet than more challenge-and-
+      printable pages, and the eight slots should go elsewhere.
 - [ ] **Days 11–14 · alternatives pages and the variant spokes.**
 
 ### Implementation constraints
